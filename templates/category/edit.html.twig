@@ -3,11 +3,16 @@
 {% block title %}Edit Category{% endblock %}
 
 {% block body %}
-    <h1>Edit Category</h1>
 
-    {{ include('category/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_category_index') }}">back to list</a>
-
-    {{ include('category/_delete_form.html.twig') }}
+<div class="container col-md-10">
+    <div class="card shadow mt-5">
+        <div class="card-body">
+            <h1>Ajouter un nouveau Catégorie</h1>
+            {{ include('category/_form.html.twig', {'button_label': 'Modifier'}) }}
+        </div>
+        <div class="card-footer">
+            {{ include('category/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}
