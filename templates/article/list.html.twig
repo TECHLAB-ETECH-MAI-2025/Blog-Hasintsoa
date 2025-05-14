@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Category index{% endblock %}
+
+{% block body %}
+    <h1 class="text-center">Liste des articles</h1>
+    <div class="container col-md-10">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Date création</th>
+                            <th>actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for article in articles %}
+                        <tr>
+                            <td>{{ article.id }}</td>
+                            <td>{{ article.title }}</td>
+                            <td>{{ article.content }}</td>
+                            <td>{{ article.createdAt|date('d M Y') }}</td>
+                            <td>
+                                <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-primary">show</a>
+                                <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-success">edit</a>
+                                {{ include('article/_delete_form.html.twig') }}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5">no records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

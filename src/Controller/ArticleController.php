@@ -13,10 +13,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/article')]
 final class ArticleController extends AbstractController
 {
-    #[Route(name: 'app_article_index', methods: ['GET'])]
+    #[Route(path: "/", name: 'app_article_home', methods: ['GET'])]
     public function index(ArticleRepository $articleRepository): Response
     {
         return $this->render('article/index.html.twig', [
@@ -24,7 +23,15 @@ final class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
+    #[Route(path: "/article", name: 'app_article_index', methods: ['GET'])]
+    public function list(ArticleRepository $articleRepository): Response
+    {
+        return $this->render('article/list.html.twig', [
+            'articles' => $articleRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/article/new', name: 'app_article_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $article = new Article();
@@ -35,7 +42,7 @@ final class ArticleController extends AbstractController
             $article->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($article);
             $entityManager->flush();
-
+            $this->addFlash('success', 'Article ajouté avec succès');
             return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -45,7 +52,7 @@ final class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_article_show', methods: ['GET', 'POST'])]
+    #[Route('/article/{id}', name: 'app_article_show', methods: ['GET', 'POST'])]
     public function show(
         Article $article,
         Request $request,
@@ -77,7 +84,7 @@ final class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_article_edit', methods: ['GET', 'POST'])]
+    #[Route('/article/{id}/edit', name: 'app_article_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ArticleForm::class, $article);
@@ -85,7 +92,7 @@ final class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            $this->addFlash('success', 'Article modifié avec succès');
             return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -95,11 +102,12 @@ final class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_article_delete', methods: ['POST'])]
+    #[Route('/article/{id}/delete', name: 'app_article_delete', methods: ['POST'])]
     public function delete(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($article);
+            $this->addFlash('success', 'Article supprimé avec succès');
             $entityManager->flush();
         }
 

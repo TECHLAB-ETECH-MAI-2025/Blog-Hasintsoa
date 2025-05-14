@@ -3,44 +3,28 @@
 {% block title %}Article index{% endblock %}
 
 {% block body %}
-    <div class="d-flex flex-column justify-content-center align-items-center mb-4">
-        <h1>Mon Blog</h1>
-        <a href="{{ path('app_article_new') }}" class="btn btn-primary">Nouvelle Article</a>
-    </div>
-    <div class="container col-md-10">
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Title</th>
-                            <th>Content</th>
-                            <th>CreatedAt</th>
-                            <th>actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for article in articles %}
-                        <tr>
-                            <td>{{ article.id }}</td>
-                            <td>{{ article.title }}</td>
-                            <td>{{ article.content }}</td>
-                            <td>{{ article.createdAt|date('Y-m-d') }}</td>
-                            <td>
-                                <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-primary">show</a>
-                                <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-success">edit</a>
-                                {{ include('article/_delete_form.html.twig') }}
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="5">no records found</td>
-                        </tr>
+    <div class="container col-md-10 pt-3">
+        {% for article in articles %}
+            <div class="border border-secondary rounded p-3 my-3">
+                <h2 class="fs-3 fw-semibold">
+                    <a href="{{ path('app_article_show', {'id': article.id}) }}" class="text-decoration-none">{{ article.title }}</a>
+                </h2>
+                <div class="text-secondary">
+                    publié le {{ article.createdAt|date('d M Y à H:i') }}
+                </div>
+                <p>
+                    {{ article.content|nl2br }}
+                </p>
+                {% if article.categories|length > 0 %}
+                    {% for category in article.categories %}
+                        <span class="badge text-bg-secondary rounded-pill">
+                            {{ category.title }}
+                        </span>
                     {% endfor %}
-                    </tbody>
-                </table>
+                {% endif %}
             </div>
-        </div>
+        {% else %}
+            <div>Pas D'article pour le moment</div>
+        {% endfor %}
     </div>
 {% endblock %}
