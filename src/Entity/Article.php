@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
+#[UniqueEntity("title")]
 class Article
 {
     #[ORM\Id]
@@ -17,9 +20,13 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 5)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 5)]
     private ?string $content = null;
 
     #[ORM\Column]
