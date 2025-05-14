@@ -25,22 +25,20 @@
                 </p>
                 <div class="my-2">
                     <h4>Commentaires</h4>
-                    <div class="comment">
-                        <strong>Marie Dupont</strong>: Super article, j'ai appris beaucoup sur les épices utilisées !
-                    </div>
+                    {% if article.comments|length > 0 %}
+                        {% for comment in article.comments %}
+                            <div class="comment">
+                                <strong>
+                                    {{ comment.author }}
+                                </strong>:
+                                {{ comment.content }}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Aucun commentaire pour le moment. Soyez le premier à réagir !</p>
+                    {% endif %}
                 </div>
-                <div class="mt-3">
-                    <h5>Ajouter un Commentaire</h5>
-                    <div class="mb-3">
-                        <label for="example-comment-author" class="form-label">Auteur</label>
-                        <input type="text" class="form-control" id="example-comment-author" placeholder="Votre nom" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="example-comment" class="form-label">Commentaire</label>
-                        <input type="text" class="form-control" id="example-comment" placeholder="Votre commentaire" />
-                    </div>
-                <button class="btn btn-outline-primary" onclick="alert('Commentaire ajouté (exemple statique) !')">Commenter</button>
-            </div>
+                {{ include('article/_comment_form.html.twig') }}
             </div>
         </div>
     </div>
