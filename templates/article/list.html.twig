@@ -10,10 +10,10 @@
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            <th>Title</th>
+                            <th>{{ knp_pagination_sortable(articles, "Id", "a.id")|raw }}</th>
+                            <th>{{ knp_pagination_sortable(articles, "Titre", "a.title")|raw }}</th>
                             <th>Content</th>
-                            <th>Date création</th>
+                            <th>{{ knp_pagination_sortable(articles, "Date création", "a.createdAt")|raw }}</th>
                             <th>actions</th>
                         </tr>
                     </thead>
@@ -21,11 +21,12 @@
                     {% for article in articles %}
                         <tr>
                             <td>{{ article.id }}</td>
-                            <td>{{ article.title }}</td>
+                            <td>
+                                <a href="{{ path('app_article_show', {'id': article.id}) }}" class="text-decoration-none">{{ article.title }}</a>
+                            </td>
                             <td>{{ article.content }}</td>
                             <td>{{ article.createdAt|date('d M Y') }}</td>
                             <td>
-                                <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-primary">show</a>
                                 <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-success">edit</a>
                                 {{ include('article/_delete_form.html.twig') }}
                             </td>
@@ -39,5 +40,8 @@
                 </table>
             </div>
         </div>
+    </div>
+    <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(articles) }}
     </div>
 {% endblock %}

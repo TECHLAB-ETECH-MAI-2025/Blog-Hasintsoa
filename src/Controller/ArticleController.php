@@ -16,18 +16,28 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ArticleController extends AbstractController
 {
     #[Route(path: "/", name: 'app_article_home', methods: ['GET'])]
-    public function index(ArticleRepository $articleRepository): Response
+    public function index(
+        ArticleRepository $articleRepository,
+        Request $request
+    ): Response
     {
+        $page = $request->query->getInt("page", 1);
+        $articles = $articleRepository->paginateArticles($page, 2);
         return $this->render('article/index.html.twig', [
-            'articles' => $articleRepository->findAll(),
+            'articles' => $articles,
         ]);
     }
 
     #[Route(path: "/article", name: 'app_article_index', methods: ['GET'])]
-    public function list(ArticleRepository $articleRepository): Response
+    public function list(
+        ArticleRepository $articleRepository,
+        Request $request
+    ): Response
     {
+        $page = $request->query->getInt("page", 1);
+        $articles = $articleRepository->paginateArticles($page, 2);
         return $this->render('article/list.html.twig', [
-            'articles' => $articleRepository->findAll(),
+            'articles' => $articles,
         ]);
     }
 
