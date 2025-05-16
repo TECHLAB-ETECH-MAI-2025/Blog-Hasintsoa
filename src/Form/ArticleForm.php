@@ -35,6 +35,7 @@ class ArticleForm extends AbstractType
                 'class' => Category::class,
                 'choice_label' => 'title',
                 'multiple' => true,
+                //'expanded' => true
             ])
         ;
     }
