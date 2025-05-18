@@ -1,59 +1,61 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ article.title }}{% endblock %}
+{% block title %}
+	{{ article.title }}
+{% endblock %}
 
 {% block body %}
-    <div class="container col-md-8 mt-5">
-        <h2>Articles</h2>
-        <div class="card">
-            <div class="card-body">
-                <h3>{{ article.title }}</h3>
-                <p>
-                    {{ article.content|nl2br }}
-                </p>
-                <p class="text-secondary fst-italic">
-                    {% if article.categories|length > 0 %}
-                        Catégories :
-                        {{ article.categories|map(category => "#{category.title}")|join(', ') }}
-                    {% endif %}
-                </p>
-                <p>
-                    Publié le
-                    <span class="fw-bold">
-                        {{ article.createdAt|date('d M Y à H:i') }}
-                    </span>
-                </p>
-                <div class="my-2">
-                    <h4>Commentaires</h4>
-                    {% if article.comments|length > 0 %}
-                        {% for comment in article.comments %}
-                            <div class="comment">
-                                <strong>
-                                    {{ comment.author }}
-                                </strong>:
-                                {{ comment.content }}
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>Aucun commentaire pour le moment. Soyez le premier à réagir !</p>
-                    {% endif %}
-                </div>
-                {{ include('article/_comment_form.html.twig') }}
-            </div>
-        </div>
-    </div>
+	<div class="container col-md-8 mt-5">
+		<h2>Articles</h2>
+		<div class="card">
+			<div class="card-body">
+				<h3>{{ article.title }}</h3>
+				<p>
+					{{ article.content|nl2br }}
+				</p>
+				<p class="text-secondary fst-italic">
+					{% if article.categories|length > 0 %}
+						Catégories :
+						{{ article.categories|map(category => "#{category.title}")|join(', ') }}
+					{% endif %}
+				</p>
+				<p>
+					Publié le
+					<span class="fw-bold">
+						{{ article.createdAt|date('d M Y à H:i') }}
+					</span>
+				</p>
+				<div class="my-2">
+					<h4>Commentaires</h4>
+					{% if article.comments|length > 0 %}
+						{% for comment in article.comments %}
+							<div class="comment">
+								<strong>
+									{{ comment.author }}
+								</strong>:
+								{{ comment.content }}
+							</div>
+						{% endfor %}
+					{% else %}
+						<p>Aucun commentaire pour le moment. Soyez le premier à réagir !</p>
+					{% endif %}
+				</div>
+				{{ include('article/_comment_form.html.twig') }}
+			</div>
+		</div>
+	</div>
 
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .comment {
-            background-color: #f1f3f5;
-            padding: 10px;
-            border-left: 4px solid #0d6efd;
-            margin-bottom: 10px;
-            border-radius: 4px;
-        }
-    </style>
+	{{ parent() }}
+	<style>
+		.comment {
+			background-color: #f1f3f5;
+			padding: 10px;
+			border-left: 4px solid #0d6efd;
+			margin-bottom: 10px;
+			border-radius: 4px;
+		}
+	</style>
 {% endblock %}

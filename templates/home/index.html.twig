@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Mon Blog
+{% endblock %}
+
+{% block body %}
+	<div class="container col-md-10 pt-3">
+		{% for article in articles %}
+			<div class="border border-secondary rounded p-3 my-3">
+				<h2 class="fs-3 fw-semibold">
+					<a href="{{ path('app_article_show', {'id': article.id}) }}" class="text-decoration-none">{{ article.title }}</a>
+				</h2>
+				<div class="text-secondary">
+					publié le
+					{{ article.createdAt|date('d M Y à H:i') }}
+				</div>
+				<p>
+					{{ article.content|nl2br }}
+				</p>
+				{% if article.categories|length > 0 %}
+					{% for category in article.categories %}
+						<span class="badge text-bg-secondary rounded-pill">
+							{{ category.title }}
+						</span>
+					{% endfor %}
+				{% endif %}
+			</div>
+		{% else %}
+			<div>Pas D'article pour le moment</div>
+		{% endfor %}
+	</div>
+	<div class="d-flex justify-content-center">
+		{{ knp_pagination_render(articles) }}
+	</div>
+{% endblock %}
