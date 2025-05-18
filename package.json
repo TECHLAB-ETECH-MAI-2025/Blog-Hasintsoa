@@ -3,6 +3,7 @@
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
         "@symfony/webpack-encore": "^5.0.0",
+        "concurrently": "^9.1.2",
         "core-js": "^3.38.0",
         "regenerator-runtime": "^0.13.9",
         "sass": "^1.89.0",
@@ -15,7 +16,8 @@
     "private": true,
     "scripts": {
         "dev-server": "encore dev-server",
-        "dev": "encore dev",
+        "dev-web": "encore dev",
+        "dev": "concurrently -k -n \"Symfony,Webpack\" -p \"[{name}]\" -c \"gray.bold,cyan.bold\" \"symfony serve\" \"npm run watch\"",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
     },
