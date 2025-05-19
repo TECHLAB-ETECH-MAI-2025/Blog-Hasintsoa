@@ -20,7 +20,7 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank(message: "Ne doit pas être vide")]
     #[Assert\Length(min: 5)]
     private ?string $title = null;
 

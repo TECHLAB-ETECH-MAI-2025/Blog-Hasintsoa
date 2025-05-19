@@ -1,0 +1,10 @@
+
+<div class="d-flex">
+	<a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-success">Modifier</a>
+	<form method="post" class="d-inline-block" action="{{ path('app_article_delete', {'id': article.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer l article {{ article.title }} ?');">
+		<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+		<button class="btn btn-danger">
+			Delete
+		</button>
+	</form>
+</div>

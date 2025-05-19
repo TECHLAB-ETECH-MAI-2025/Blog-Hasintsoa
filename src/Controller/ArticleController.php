@@ -6,7 +6,6 @@ use App\Entity\Article;
 use App\Entity\Comment;
 use App\Form\ArticleForm;
 use App\Form\CommentForm;
-use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,15 +17,8 @@ final class ArticleController extends AbstractController
 {
 
     #[Route(path: "/", name: 'app_article_index', methods: ['GET'])]
-    public function list(
-        ArticleRepository $articleRepository,
-        Request $request
-    ): Response {
-        $page = $request->query->getInt("page", 1);
-        $articles = $articleRepository->paginateArticles($page, 2);
-        return $this->render('article/index.html.twig', [
-            'articles' => $articles,
-        ]);
+    public function index(): Response {
+        return $this->render('article/index.html.twig', []);
     }
 
     #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
@@ -104,8 +96,8 @@ final class ArticleController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($article);
-            $this->addFlash('success', 'Article supprimé avec succès');
             $entityManager->flush();
+            $this->addFlash('success', 'Article supprimé avec succès');
         }
 
         return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);

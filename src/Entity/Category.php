@@ -23,6 +23,8 @@ class Category
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 5)]
     private ?string $description = null;
 
     #[ORM\Column]

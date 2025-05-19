@@ -25,6 +25,7 @@
 						{{ article.createdAt|date('d M Y à H:i') }}
 					</span>
 				</p>
+				{{ include('article/_comment_form.html.twig') }}
 				<div class="my-2">
 					<h4>Commentaires</h4>
 					{% if article.comments|length > 0 %}
@@ -40,7 +41,6 @@
 						<p>Aucun commentaire pour le moment. Soyez le premier à réagir !</p>
 					{% endif %}
 				</div>
-				{{ include('article/_comment_form.html.twig') }}
 			</div>
 		</div>
 	</div>

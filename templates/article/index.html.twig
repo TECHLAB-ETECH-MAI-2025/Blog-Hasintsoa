@@ -4,46 +4,31 @@
 	Liste des articles
 {% endblock %}
 
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('article_list') }}
+{% endblock %}
+
 {% block body %}
 	<h1 class="text-center">Liste des articles</h1>
 	<div class="container col-md-10">
 		<div class="card">
 			<div class="card-body">
-				<table class="table table-hover align-middle">
+				<table class="table table-hover align-middle" id="articles-table">
 					<thead>
 						<tr>
-							<th>{{ knp_pagination_sortable(articles, "Id", "a.id")|raw }}</th>
-							<th>{{ knp_pagination_sortable(articles, "Titre", "a.title")|raw }}</th>
-							<th>Content</th>
-							<th>{{ knp_pagination_sortable(articles, "Date création", "a.createdAt")|raw }}</th>
-							<th>actions</th>
+							<th>Id</th>
+							<th>Titre</th>
+							<th>Catégories</th>
+							<th>Commentaires</th>
+							<th>J'aime</th>
+							<th>Date</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
-					<tbody>
-						{% for article in articles %}
-							<tr>
-								<td>{{ article.id }}</td>
-								<td>
-									<a href="{{ path('app_article_show', {'id': article.id}) }}" class="text-decoration-none">{{ article.title }}</a>
-								</td>
-								<td>{{ article.content }}</td>
-								<td>{{ article.createdAt|date('d M Y') }}</td>
-								<td>
-									<a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-success">edit</a>
-									{{ include('article/_delete_form.html.twig') }}
-								</td>
-							</tr>
-						{% else %}
-							<tr>
-								<td colspan="5">no records found</td>
-							</tr>
-						{% endfor %}
-					</tbody>
+					<tbody></tbody>
 				</table>
 			</div>
 		</div>
-	</div>
-	<div class="d-flex justify-content-center">
-		{{ knp_pagination_render(articles) }}
 	</div>
 {% endblock %}

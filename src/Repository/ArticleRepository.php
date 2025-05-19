@@ -16,23 +16,100 @@ class ArticleRepository extends ServiceEntityRepository
     public function __construct(
         ManagerRegistry $registry,
         private PaginatorInterface $paginator
-    )
-    {
+    ) {
         parent::__construct($registry, Article::class);
     }
 
-    public function paginateArticles(int $page, $limit): PaginationInterface
+    /**
+     * Pagination des articles
+     * @param int $page
+     * @param int $limit
+     * @return PaginationInterface<int, mixed>
+     */
+    public function paginateArticles(int $page, int $limit): PaginationInterface
     {
         return $this->paginator->paginate(
-            $this->createQueryBuilder("a"),
+            $this->createQueryBuilder("a")
+                ->orderBy("a.createdAt", "DESC"),
             $page,
             $limit,
             [
                 "sortFieldAllowList" => [
-                    "a.id", "a.title", "a.createdAt"
+                    "a.id",
+                    "a.title",
+                    "a.createdAt"
                 ]
             ]
         );
+    }
+
+    /**
+     * DataTable Listing
+     * @param int $start
+     * @param int $length
+     * @param mixed $search
+     * @param mixed $orderColumn
+     * @param mixed $orderDir
+     * @return array{data: mixed, filteredCount: bool|float|int|string|null, totalCount: bool|float|int|string|null}
+     */
+    public function findForDataTable($start, $length, $search, $orderColumn, $orderDir): array
+    {
+        $qb = $this->createQueryBuilder("a")
+            ->leftJoin("a.categories", "c")
+            ->leftJoin('a.comments', 'com')
+            ->leftJoin('a.likes', 'l')
+            ->addSelect('COUNT(com.id) AS commentsCount')
+            ->addSelect('COUNT(l.id) as likesCount')
+            ->groupBy("a.id", "c.title");
+        if ($search) {
+            $qb->andWhere('a.title LIKE :search OR c.title LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+        $totalCount = $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->distinct()
+            ->getQuery()
+            ->getScalarResult()[0];
+        $filteredCountQb = clone $qb;
+        $filteredCount = $filteredCountQb
+            ->select('COUNT(DISTINCT a.id)')
+            ->distinct()
+            ->getQuery()
+            ->getScalarResult();
+        if ($orderColumn === 'commentsCount') {
+            $qb->orderBy('commentsCount', $orderDir);
+        } elseif ($orderColumn === 'likesCount') {
+            $qb->orderBy('likesCount', $orderDir);
+        } elseif ($orderColumn === 'categories') {
+            $qb->orderBy('c.title', $orderDir);
+        } else {
+            $qb->orderBy($orderColumn, $orderDir);
+        }
+        $qb->setFirstResult($start)
+            ->setMaxResults($length);
+        return [
+            'data' => $qb->getQuery()->getResult(),
+            'totalCount' => $totalCount[1],
+            'filteredCount' => $filteredCount
+        ];
+    }
+
+    /**
+     * Recherche par titre
+     * @param string $query
+     * @param int $limit
+     * @return Article[] Retourne la liste des articles
+     */
+    public function searchByTitle(string $query, int $limit = 10): array
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.categories', 'c')
+            ->where('a.title LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**
