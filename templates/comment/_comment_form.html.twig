@@ -1,0 +1,22 @@
+{{ form_start(
+	commentForm, {
+		"attr": {
+			"id": "comment-form",
+			"action": path('api_article_comment', {'id': article.id})
+		}
+	})
+}}
+
+<div class="mt-3">
+	<h5>Ajouter un Commentaire</h5>
+	<div class="mb-3" id="author-row">
+		{{ form_label(commentForm.author) }}
+		{{ form_widget(commentForm.author) }}
+	</div>
+	<div class="mb-3" id="content-row">
+		{{ form_label(commentForm.content) }}
+		{{ form_widget(commentForm.content) }}
+	</div>
+	<button type="submit" class="btn btn-outline-primary">Commenter</button>
+</div>
+{{ form_end(commentForm) }}

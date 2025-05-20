@@ -42,34 +42,11 @@ final class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_article_show', methods: ['GET', 'POST'])]
-    public function show(
-        Article $article,
-        Request $request,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $comment = new Comment();
-        $comment->setArticle($article);
-        $form = $this->createForm(CommentForm::class, $comment);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $comment->setCreatedAt(new \DateTimeImmutable());
-            $entityManager->persist($comment);
-            $entityManager->flush();
-            $this->addFlash('success', 'Votre commentaire a été publié avec succès !');
-            return $this->redirectToRoute(
-                'app_article_show',
-                [
-                    "id" => $article->getId()
-                ],
-                Response::HTTP_SEE_OTHER
-            );
-        }
-
+    #[Route('/{id}', name: 'app_article_show', methods: ['GET'])]
+    public function show(Article $article): Response {
         return $this->render('article/show.html.twig', [
             'article' => $article,
-            'commentForm' => $form,
+            'commentForm' => $this->createForm(CommentForm::class, new Comment()),
         ]);
     }
 

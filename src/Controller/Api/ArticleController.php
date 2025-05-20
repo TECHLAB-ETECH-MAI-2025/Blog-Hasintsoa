@@ -2,10 +2,15 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Article;
+use App\Entity\Comment;
+use App\Form\CommentForm;
 use App\Repository\ArticleRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/articles')]
@@ -65,5 +70,38 @@ final class ArticleController extends AbstractController
             "recordsFiltered" => $results["filteredCount"],
             "data" => $data
         ]);
+    }
+
+    #[Route('/{id}/comment', name: 'api_article_comment', methods: ['POST'])]
+    public function addComment(
+        Article $article,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $comment = new Comment();
+        $comment->setArticle($article);
+        $form = $this->createForm(CommentForm::class, $comment);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setCreatedAt(new \DateTimeImmutable());
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            return $this->json([
+                'success' => true,
+                'commentHtml' => $this->renderView('comment/_comment.html.twig', [
+                    'comment' => $comment
+                ]),
+                'commentsCount' => $article->getComments()->count()
+            ]);
+        }
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[$error->getOrigin()->getName()] = $error->getMessage();
+        }
+
+        return $this->json([
+            'success' => false,
+            'error' => count($errors) > 0 ? $errors : 'Formulaire invalide'
+        ], Response::HTTP_BAD_REQUEST);
     }
 }
