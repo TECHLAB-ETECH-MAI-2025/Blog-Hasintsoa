@@ -1,5 +1,6 @@
 import jQuery from "jquery";
 import { Toast } from "bootstrap";
+import { wait } from "../app.js";
 
 jQuery(function ($) {
   const $commentForm = $("#comment-form");
@@ -8,6 +9,9 @@ jQuery(function ($) {
   $commentForm.on("submit", function (event) {
     event.preventDefault();
     event.stopPropagation();
+    const $submitBtn = $commentForm.find('button[type="submit"]');
+    const originalBtnText = $submitBtn.html();
+    $submitBtn.html('Envoi en cours...').prop('disabled', true);
     $.ajax({
       method: "POST",
       url: $commentForm.attr("action"),
@@ -27,7 +31,6 @@ jQuery(function ($) {
           status,
           responseJSON: { error }
         } = err;
-        console.log(error)
         if (status === 400) {
           $(".invalid-feedback").remove();
           showAlert("danger", "Veuillez remplir le formulaire correctement !");
@@ -38,6 +41,9 @@ jQuery(function ($) {
             "danger", "Une erreur est survenue lors de l'envoi du commentaire !"
           );
         }
+      },
+      complete: () => {
+        $submitBtn.html(originalBtnText).prop('disabled', false);
       }
     });
   });
