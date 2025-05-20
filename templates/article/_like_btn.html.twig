@@ -1,0 +1,6 @@
+<button id="article-like-{{ article.id }}" type="button" class="like-button {% for like in article.likes %}{% if like.ipAddress == ipAddress %} liked {% endif %}{% endfor %} btn btn-primary" data-article-id="{{ article.id }}">
+	<i class="fa-solid fa-xl fa-thumbs-up"></i>
+	<span id="likes-count" class="bg-white p-1 rounded text-dark ms-3">
+		{{ article.likes|length }}
+	</span>
+</button>

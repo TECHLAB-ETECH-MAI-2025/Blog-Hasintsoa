@@ -16,9 +16,10 @@ final class HomeController extends AbstractController
         Request $request
     ): Response {
         $page = $request->query->getInt("page", 1);
-        $articles = $articleRepository->paginateArticles($page, 2);
+        $articles = $articleRepository->paginateArticles($page, 4);
         return $this->render('home/index.html.twig', [
-            'articles' => $articles,
+            "articles" => $articles,
+            "ipAddress" => $request->getClientIp()
         ]);
     }
 }

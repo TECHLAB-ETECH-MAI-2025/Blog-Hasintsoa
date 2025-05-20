@@ -4,10 +4,15 @@
 	Mon Blog
 {% endblock %}
 
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('article_like') }}
+{% endblock %}
+
 {% block body %}
 	<div class="container col-md-10 pt-3">
 		{% for article in articles %}
-			<div class="border border-secondary rounded p-3 my-3">
+			<div class="border border-secondary rounded p-3 my-2">
 				<h2 class="fs-3 fw-semibold">
 					<a href="{{ path('app_article_show', {'id': article.id}) }}" class="text-decoration-none">{{ article.title }}</a>
 				</h2>
@@ -16,7 +21,7 @@
 					{{ article.createdAt|date('d M Y à H:i') }}
 				</div>
 				<p>
-					{{ article.content|nl2br }}
+					{{ article.content|length > 100 ? article.content|slice(0, 150) ~ '...' : article.content }}
 				</p>
 				{% if article.categories|length > 0 %}
 					{% for category in article.categories %}
@@ -25,6 +30,14 @@
 						</span>
 					{% endfor %}
 				{% endif %}
+				<div class="d-flex justify-content-end mt-2">
+					<button id="article-like-{{ article.id }}" type="button" class="like-button {% for like in article.likes %}{% if like.ipAddress == ipAddress %} liked {% endif %}{% endfor %} btn btn-primary" data-article-id="{{ article.id }}">
+						<i class="fa-solid fa-xl fa-thumbs-up"></i>
+						<span id="likes-count" class="bg-white p-1 rounded text-dark ms-3">
+							{{ article.likes|length }}
+						</span>
+					</button>
+				</div>
 			</div>
 		{% else %}
 			<div>Pas D'article pour le moment</div>

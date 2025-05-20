@@ -23,6 +23,7 @@ Encore
     .addEntry('app', './assets/app.js')
     .addEntry('article_comment', './assets/js/article_comment.js')
     .addEntry('article_list', './assets/js/article_list.js')
+    .addEntry('article_like', './assets/js/article_like.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

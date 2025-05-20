@@ -17,7 +17,7 @@
     "scripts": {
         "dev-server": "encore dev-server",
         "dev-web": "encore dev",
-        "dev": "concurrently -k -n \"Symfony,Webpack\" -p \"[{name}]\" -c \"gray.bold,cyan.bold\" \"symfony serve\" \"npm run watch\"",
+        "dev": "concurrently -k -n \"Symfony,Webpack\" -p \"[{name}]\" -c \"gray.bold,cyan.bold\" \"symfony serve --allow-all-ip\" \"npm run watch\"",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
     },

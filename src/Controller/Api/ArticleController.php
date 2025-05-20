@@ -3,8 +3,10 @@
 namespace App\Controller\Api;
 
 use App\Entity\Article;
+use App\Entity\ArticleLike;
 use App\Entity\Comment;
 use App\Form\CommentForm;
+use App\Repository\ArticleLikeRepository;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -103,5 +105,37 @@ final class ArticleController extends AbstractController
             'success' => false,
             'error' => count($errors) > 0 ? $errors : 'Formulaire invalide'
         ], Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Route('/{id}/like', name: 'api_article_like', methods: ['POST'])]
+    public function likeArticler(
+        Article $article,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ArticleLikeRepository $likeRepository
+    ): JsonResponse {
+        $ipAddress = $request->getClientIp();
+        $existingLike = $likeRepository->findOneBy([
+            "article" => $article,
+            "ipAddress" => $ipAddress
+        ]);
+        $liked = true;
+        if ($existingLike) {
+            $entityManager->remove($existingLike);
+            $liked = false;
+        } else {
+            $like = new ArticleLike();
+            $like->setArticle($article);
+            $like->setIpAddress($ipAddress);
+            $like->setCreatedAt(new \DateTimeImmutable());
+            $entityManager->persist($like);
+        }
+        $entityManager->flush();
+        return $this->json([
+            "success" => true,
+            "liked" => $liked,
+            "articleId" => $article->getId(),
+            "likesCount" => $article->getLikes()->count()
+        ]);
     }
 }

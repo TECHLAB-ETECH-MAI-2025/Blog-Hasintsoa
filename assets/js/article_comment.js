@@ -11,7 +11,7 @@ jQuery(function ($) {
     event.stopPropagation();
     const $submitBtn = $commentForm.find('button[type="submit"]');
     const originalBtnText = $submitBtn.html();
-    $submitBtn.html('Envoi en cours...').prop('disabled', true);
+    $submitBtn.html("Envoi en cours...").prop("disabled", true);
     $.ajax({
       method: "POST",
       url: $commentForm.attr("action"),
@@ -25,6 +25,8 @@ jQuery(function ($) {
         $commentsCount.text(response.commentsCount);
         $commentForm[0].reset();
         showAlert("success", "Votre commentaire a été publié avec succès !");
+        $(".invalid-feedback").remove();
+        $(".form-control").removeClass("is-invalid");
       },
       error: (err) => {
         const {
@@ -34,16 +36,16 @@ jQuery(function ($) {
         if (status === 400) {
           $(".invalid-feedback").remove();
           showAlert("danger", "Veuillez remplir le formulaire correctement !");
-          if (error.author) showValidationMessage("#author-row", error.author, "#comment_form_author")
-          if (error.content) showValidationMessage("#content-row", error.content, "#comment_form_content")
+          if (error.author)
+            showValidationMessage("#author-row", error.author, "#comment_form_author");
+          if (error.content)
+            showValidationMessage("#content-row", error.content, "#comment_form_content");
         } else {
-          showAlert(
-            "danger", "Une erreur est survenue lors de l'envoi du commentaire !"
-          );
+          showAlert("danger", "Une erreur est survenue lors de l'envoi du commentaire !");
         }
       },
       complete: () => {
-        $submitBtn.html(originalBtnText).prop('disabled', false);
+        $submitBtn.html(originalBtnText).prop("disabled", false);
       }
     });
   });
@@ -65,9 +67,9 @@ jQuery(function ($) {
   };
 
   const showValidationMessage = (rowId, message, inputId) => {
-    const $authRow = $(rowId)
-    const $authorErr = $(`<div class="invalid-feedback">${message}</div>`)
-    $authRow.append($authorErr)
-    $authRow.find(inputId).addClass("is-invalid")
-  }
+    const $authRow = $(rowId);
+    const $authorErr = $(`<div class="invalid-feedback">${message}</div>`);
+    $authRow.append($authorErr);
+    $authRow.find(inputId).addClass("is-invalid");
+  };
 });
