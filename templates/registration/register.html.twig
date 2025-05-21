@@ -1,23 +1,55 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html class="vh-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}Inscription - Symfony Blog Techlab{% endblock %}
+    </title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {{ encore_entry_link_tags('app') }}
+    {{ encore_entry_script_tags('app') }}
+</head>
+<body class="min-vh-100 d-flex justify-content-center align-items-center">
+    <div class="container col-11 col-md-8">
+        <div class="card shadow">
+            <div class="card-header">
+                <h1 class="h3 font-weight-normal text-center">
+                    Créer un compte
+                </h1>
+            </div>
+            <div class="card-body">
+                {% for flash_error in app.flashes('verify_email_error') %}
+                    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                {% endfor %}
 
-{% block title %}Register{% endblock %}
+                {{ form_errors(registrationForm) }}
 
-{% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+                {{ form_start(registrationForm, {
+                    "attr": {
+                        "class": "row g-3"
+                    }
+                }) }}
+                    {{ form_row(registrationForm.firstName) }}
+                    {{ form_row(registrationForm.lastName) }}
+                    {{ form_row(registrationForm.email) }}
+                    {{ form_row(registrationForm.plainPassword) }}
+                    {{ form_row(registrationForm.agreeTerms) }}
+                    <div class="container col-12 col-md-8 my-4">
+                        <button type="submit" class="btn btn-lg btn-primary w-100">S'inscrire</button>
+                    </div>
+                {{ form_end(registrationForm) }}
+                <div class="mt-3 text-center">
+                    <span>Vous avez déjà un compte ?&nbsp;</span>
+                    <a href="{{ path('app_login') }}" class="text-decoration-none">Se connecter</a>
+                </div>
+            </div>
+            <div class="card-footer">
+                <p class="mt-3 text-center text-body-secondary">&copy; {{ "now"|date("Y") }} Blog Symfony - Tous droits réservés</p>
+            </div>
+        </div>
+    </div>
+    {% include 'partials/_message.html.twig' %}
+</body>
+</html>
 
-    <h1>Register</h1>
-
-    {{ form_errors(registrationForm) }}
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
-{% endblock %}

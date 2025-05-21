@@ -6,8 +6,10 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -17,8 +19,38 @@ class RegistrationForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
+            ->add('email', null, [
+                'row_attr' => [
+                    "class" => "col-12"
+                ],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer une adresse email',
+                    ]),
+                    new Email([
+                        'message' => 'L\'adresse email n\'est pas valide',
+                    ])
+                ]
+            ])
+            ->add('firstName', null, [
+                'row_attr' => [
+                    "class" => "col-12 col-md-6"
+                ],
+                'label' => 'Prénom',
+                'required' => false
+            ])
+            ->add('lastName', null, [
+                'row_attr' => [
+                    "class" => "col-12 col-md-6"
+                ],
+                'label' => 'Nom',
+                'required' => false
+            ])
             ->add('agreeTerms', CheckboxType::class, [
+                'label' => "J'accepte les conditions d'utilisation",
+                'row_attr' => [
+                    "class" => "col-12 d-flex justify-content-center"
+                ],
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
@@ -26,22 +58,32 @@ class RegistrationForm extends AbstractType
                     ]),
                 ],
             ])
-            ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
                 'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'row_attr' => [
+                        "class" => "col-12 col-md-6"
+                    ]
+                ],
+                'second_options' => [
+                    'label' => 'Confirmer le mot de passe',
+                    'row_attr' => [
+                        "class" => "col-12 col-md-6"
+                    ]
+                ],
+                'invalid_message' => 'Les mots de passe ne correspondent pas.',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter a password',
+                        'message' => 'Veuillez entrer un mot de passe',
                     ]),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
+                        'minMessage' => 'Votre mot de passe doit comporter au moins {{ limit }} caractères',
                         'max' => 4096,
                     ]),
-                ],
+                ]
             ])
         ;
     }

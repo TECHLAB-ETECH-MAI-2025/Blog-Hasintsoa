@@ -1,34 +1,68 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html class="vh-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}Login - Symfony Blog Techlab{% endblock %}
+    </title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {{ encore_entry_link_tags('app') }}
+    {{ encore_entry_script_tags('app') }}
+</head>
+<body class="min-vh-100 d-flex justify-content-center align-items-center">
+    <div class="container col-11 col-sm-8 col-md-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <h1 class="h3 font-weight-normal text-center">Connexion</h1>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% if app.user %}
+                        <div class="mb-3">
+                            You are logged in as
+                            {{ app.user.userIdentifier }},
+                            <a href="{{ path('app_logout') }}">Logout</a>
+                        </div>
+                    {% endif %}
 
-{% block title %}Log in!{% endblock %}
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
 
-{% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+                    <div class="form-floating mb-3">
+                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" placeholder="Email" required autofocus>
+                        <label for="inputEmail">Email</label>
+                    </div>
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                    <div class="form-floating mb-3">
+                        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" placeholder="Mot de passe" required>
+                        <label for="inputPassword">Mot de passe</label>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" id="checkbox-remember-me" type="checkbox" name="_remember_me">
+                        <label class="form-check-label" for="checkbox-remember-me">
+                            Se souvenir de moi
+                        </label>
+                    </div>
+
+                    <button class="btn btn-lg btn-primary w-100" type="submit">
+                        Se connecter
+                    </button>
+                    <div class="mt-3 text-center">
+                        <span>Vous n'avez pas de compte ? &nbsp;</span>
+                        <a href="{{ path('app_register') }}" class="text-decoration-none">Créer un compte</a>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <p class="mt-3 text-center text-body-secondary">&copy; {{ "now"|date("Y") }} Blog Symfony - Tous droits réservés</p>
+            </div>
         </div>
-    {% endif %}
-
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
-
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" name="_remember_me"> Remember me
-        </label>
     </div>
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
-{% endblock %}
+    {% include 'partials/_message.html.twig' %}
+</body>
+</html>
