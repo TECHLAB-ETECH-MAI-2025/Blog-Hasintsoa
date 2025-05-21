@@ -42,11 +42,16 @@
 
                     <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" id="checkbox-remember-me" type="checkbox" name="_remember_me">
-                        <label class="form-check-label" for="checkbox-remember-me">
-                            Se souvenir de moi
-                        </label>
+                    <div class="d-flex justify-content-between">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" id="checkbox-remember-me" type="checkbox" name="_remember_me">
+                            <label class="form-check-label" for="checkbox-remember-me">
+                                Se souvenir de moi
+                            </label>
+                        </div>
+                        <a href="{{ path('app_forgot_password_request') }}" class="text-decoration-none">
+                            Mot de passe oublié ?
+                        </a>
                     </div>
 
                     <button class="btn btn-lg btn-primary w-100" type="submit">

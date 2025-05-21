@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html class="vh-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}Réinitialisation de mot de passe - Symfony Blog Techlab{% endblock %}
+    </title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {{ encore_entry_link_tags('app') }}
+    {{ encore_entry_script_tags('app') }}
+</head>
+<body class="min-vh-100 d-flex justify-content-center align-items-center">
+    <div class="container col-11 col-sm-8 col-md-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <h1 class="h3 font-weight-normal text-center">Réinitialiser votre mot de passe</h1>
+            </div>
+            <div class="card-body">
+                <div class="my-3 text-center">
+                    <small>
+                        Entrez votre adresse email et nous vous enverrons un
+                        lien pour réinitialiser votre mot de passe.
+                    </small>
+                </div>
+                {% for flash_error in app.flashes('reset_password_error') %}
+                    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                {% endfor %}
+                {{ form_start(requestForm) }}
+                    {{ form_row(requestForm.email) }}
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary">Envoyer le lien de réinitialisation</button>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <a href="{{ path('app_login') }}" class="text-decoration-none">Retourner au formulaire de connexion</a>
+                    </div>
+                {{ form_end(requestForm) }}
+            </div>
+            <div class="card-footer">
+                <p class="mt-3 text-center text-body-secondary">&copy; {{ "now"|date("Y") }} Blog Symfony - Tous droits réservés</p>
+            </div>
+        </div>
+    </div>
+    {% include 'partials/_message.html.twig' %}
+</body>
+</html>
