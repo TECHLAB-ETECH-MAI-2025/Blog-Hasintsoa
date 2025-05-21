@@ -36,6 +36,7 @@ class Article
      * @var Collection<int, Category>
      */
     #[ORM\ManyToMany(targetEntity: Category::class)]
+    #[Assert\Count(min: 2, minMessage: "Doit contenir au moins une catégorie")]
     private Collection $categories;
 
     /**

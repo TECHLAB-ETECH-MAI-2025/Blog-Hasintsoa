@@ -16,3 +16,16 @@
         color: #e74c3c;
     }
 }
+
+.rating-star {
+    text-decoration: none;
+    &:hover {
+        color: #e74c3c;
+    }
+    &.rated {
+        color: #FFEF00;
+        &:hover {
+            color: #e74c3c;
+        }
+    }
+}

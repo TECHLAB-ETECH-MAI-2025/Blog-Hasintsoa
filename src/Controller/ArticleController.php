@@ -7,6 +7,7 @@ use App\Entity\Comment;
 use App\Form\ArticleForm;
 use App\Form\CommentForm;
 use App\Repository\ArticleLikeRepository;
+use App\Repository\ArticleRatingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,17 +48,27 @@ final class ArticleController extends AbstractController
     public function show(
         Article $article,
         Request $request,
-        ArticleLikeRepository $likeRepository
+        ArticleLikeRepository $likeRepository,
+        ArticleRatingRepository $articleRatingRepository
     ): Response {
         $ipAddress = $request->getClientIp();
         $isLiked = $likeRepository->findOneBy([
             'article' => $article,
             'ipAddress' => $ipAddress
         ]) !== null;
+        $ratingIp = 0;
+        $articleRating = $articleRatingRepository->findOneBy([
+            'article' => $article,
+            'ipAddress' => $ipAddress
+        ]);
+        if ($articleRating) {
+            $ratingIp = $articleRating->getRating();
+        }
         return $this->render('article/show.html.twig', [
             'article' => $article,
             'commentForm' => $this->createForm(CommentForm::class, new Comment()),
-            "isLiked" => $isLiked
+            "isLiked" => $isLiked,
+            "ratingIp" => $ratingIp
         ]);
     }
 

@@ -58,8 +58,10 @@ class ArticleRepository extends ServiceEntityRepository
             ->leftJoin("a.categories", "c")
             ->leftJoin('a.comments', 'com')
             ->leftJoin('a.likes', 'l')
+            ->leftJoin('a.ratings', 'r')
             ->addSelect('COUNT(com.id) AS commentsCount')
             ->addSelect('COUNT(l.id) as likesCount')
+            ->addSelect('AVG(r.rating) as ratingsSum')
             ->groupBy("a.id", "c.title");
         if ($search) {
             $qb->andWhere('a.title LIKE :search OR c.title LIKE :search')
@@ -82,6 +84,8 @@ class ArticleRepository extends ServiceEntityRepository
             $qb->orderBy('likesCount', $orderDir);
         } elseif ($orderColumn === 'categories') {
             $qb->orderBy('c.title', $orderDir);
+        } elseif ($orderColumn === 'ratingsSum') {
+            $qb->orderBy("ratingsSum", $orderDir);
         } else {
             $qb->orderBy($orderColumn, $orderDir);
         }
@@ -90,7 +94,8 @@ class ArticleRepository extends ServiceEntityRepository
         return [
             'data' => $qb->getQuery()->getResult(),
             'totalCount' => $totalCount[1],
-            'filteredCount' => $filteredCount
+            'filteredCount' => $filteredCount,
+            "sql" => $qb->getQuery()->getSQL()
         ];
     }
 

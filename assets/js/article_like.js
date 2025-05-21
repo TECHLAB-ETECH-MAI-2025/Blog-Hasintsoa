@@ -13,6 +13,9 @@ jQuery(function ($) {
         const $articleLikeBtn = $(`#article-like-${response.articleId}`)
         $articleLikeBtn.toggleClass("liked", response.liked)
         $articleLikeBtn.find("#likes-count").text(response.likesCount)
+      },
+      error: (err) => {
+        console.log(err)
       }
     });
   });

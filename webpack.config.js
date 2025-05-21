@@ -24,6 +24,7 @@ Encore
     .addEntry('article_comment', './assets/js/article_comment.js')
     .addEntry('article_list', './assets/js/article_list.js')
     .addEntry('article_like', './assets/js/article_like.js')
+    .addEntry('article_rating', './assets/js/article_rating.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

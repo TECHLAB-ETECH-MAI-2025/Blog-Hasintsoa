@@ -1,0 +1,5 @@
+<div id="article-range-{{ article.id }}">
+    {% for i in 1..5 %}
+        <a type="button" data-article-id="{{ article.id }}" data-rating="{{ i }}" class="{% if i <= ratingIp %}fa-solid rated{% else %}fa-regular{% endif %} rating-star fa-star"></a>
+    {% endfor %}
+</div>

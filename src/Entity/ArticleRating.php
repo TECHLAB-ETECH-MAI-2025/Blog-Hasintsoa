@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ArticleRatingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRatingRepository::class)]
 class ArticleRating
@@ -14,6 +15,7 @@ class ArticleRating
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'La note doit être comprise entre {{ min }} et {{ max }}')]
     private ?int $rating = null;
 
     #[ORM\Column(length: 45)]
