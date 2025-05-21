@@ -43,7 +43,13 @@ final class ArticleController extends AbstractController
         $orderColumn = $columns[$orders[0]['column'] ?? 0] ?? 'a.id';
         $orderDir = $orders[0]['dir'] ?? 'desc';
         $results = $articleRepository
-            ->findForDataTable($start, $length, $search, $orderColumn, $orderDir);
+            ->findForDataTable(
+                $start,
+                $length,
+                $search,
+                $orderColumn,
+                $orderDir
+            );
         $data = [];
         foreach ($results['data'] as $article) {
             $categoryNames = array_map(
@@ -69,13 +75,12 @@ final class ArticleController extends AbstractController
             ];
         }
         return $this->json([
-            "start" => $start,
-            "length" => $length,
+            //"start" => $start,
+            //"length" => $length,
             "draw" => $draw,
             "recordsTotal" => $results["totalCount"],
-            "recordsFiltered" => $results["filteredCount"],
-            "data" => $data,
-            "sql" => $results["sql"]
+            "recordsFiltered" => $results["totalCount"],
+            "data" => $data
         ]);
     }
 

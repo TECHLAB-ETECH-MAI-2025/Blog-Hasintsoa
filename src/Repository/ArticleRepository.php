@@ -71,7 +71,7 @@ class ArticleRepository extends ServiceEntityRepository
             ->select('COUNT(a.id)')
             ->distinct()
             ->getQuery()
-            ->getScalarResult()[0];
+            ->getSingleScalarResult();
         $filteredCountQb = clone $qb;
         $filteredCount = $filteredCountQb
             ->select('COUNT(DISTINCT a.id)')
@@ -93,9 +93,8 @@ class ArticleRepository extends ServiceEntityRepository
             ->setMaxResults($length);
         return [
             'data' => $qb->getQuery()->getResult(),
-            'totalCount' => $totalCount[1],
-            'filteredCount' => $filteredCount,
-            "sql" => $qb->getQuery()->getSQL()
+            'totalCount' => $totalCount,
+            'filteredCount' => $filteredCount
         ];
     }
 
