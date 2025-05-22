@@ -1,0 +1,54 @@
+<div class="card-body p-3">
+	<div class="text-center mb-3">
+		<div class="mb-2">
+			<img class="rounded-circle border border-2 border-white" src="/images/profile_image.jpg" alt="">
+		</div>
+		<h6 class="mb-0">{{ app.user.fullName }}</h6>
+		<a href="mailto:{{ app.user.email }}" class="text-reset text-primary-hover small">{{ app.user.email }}</a>
+		<hr>
+		<ul class="list-group">
+			<li class="list-group-item">
+				<span class="fw-bold">Nom: </span>
+				{{ app.user.lastName|default('Non renseigné') }}
+			</li>
+			<li class="list-group-item">
+				<span class="fw-bold">Prénom: </span>
+				{{ app.user.firstName|default('Non renseigné') }}
+			</li>
+			<li class="list-group-item">
+				<span class="fw-bold">Inscrit le: </span>
+				{{ app.user.createdAt|date('d M Y') }}
+			</li>
+			<li class="list-group-item">
+				<span class="fw-bold">Roles: </span>
+				{% if 'ROLE_ADMIN' in app.user.roles %}
+					Administrateur
+				{% else %}
+					Utilisateur
+				{% endif %}
+			</li>
+			<li class="list-group-item">
+				<span class="fw-bold">Status: </span>
+				{% if app.user.isVerified %}
+					<span class="badge text-bg-success">Email vérifié</span>
+				{% else %}
+					<span class="badge text-bg-danger">Email non vérifié</span>
+				{% endif %}
+			</li>
+		</ul>
+		<hr>
+		<ul class="nav nav-pills flex-column">
+			<li class="nav-item">
+				<a class="nav-link {% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}" href="{{ path('app_profile') }}">
+					<i class="fa-regular fa-user"></i>
+					Mon profile
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link {% if app.request.attributes.get('_route') == 'app_profile_change_password' %}active{% endif %}" href="{{ path('app_profile_change_password') }}">
+					Changer mon mot de passe
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profile
+{% endblock %}
+
+{% block body %}
+	<section class="pt-3">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-4 col-xl-3">
+					<div class="offcanvas-lg offcanvas-end" tabindex="-1" id="offcanvasSidebar">
+						<div class="offcanvas-header justify-content-end pb-2">
+							<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+						</div>
+						<div class="offcanvas-body p-3 p-lg-0">
+							<div class="card bg-light w-100">
+								{% include "profile/_profile_card.html.twig" %}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-8 col-xl-9">
+					<div class="d-grid mb-0 d-lg-none w-100">
+						<button class="btn btn-primary mb-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+							<i class="fa-solid fa-bars"></i>
+							Menu
+						</button>
+					</div>
+
+					<div class="vstack gap-4">
+						<div class="card border">
+							<div class="card-header border-bottom">
+								<h4 class="card-header-title">Informations personnelles</h4>
+							</div>
+
+							<div class="card-body">
+								{% include "profile/_edit_form.html.twig" %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+{% endblock %}

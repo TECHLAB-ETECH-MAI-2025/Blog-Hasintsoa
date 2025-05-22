@@ -1,0 +1,20 @@
+{{ form_start(profileForm, {
+	'attr': {
+		'class' : "row g-3"
+	}
+}) }}
+	{{ form_row(profileForm.email) }}
+	{{ form_row(profileForm.firstName, {
+		'row_attr': {
+			'class': "col-md-6"
+		}
+	}) }}
+	{{ form_row(profileForm.lastName, {
+		'row_attr': {
+			'class': "col-md-6"
+		}
+	}) }}
+	<div class="col-12 text-end">
+		<button class="btn btn-primary mb-0">Enregistrer les modifications</button>
+	</div>
+{{ form_end(profileForm) }}
