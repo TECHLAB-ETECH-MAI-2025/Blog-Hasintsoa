@@ -18,17 +18,18 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    public function __construct(private EmailVerifier $emailVerifier)
-    {
-    }
+    public function __construct(private EmailVerifier $emailVerifier) {}
 
     #[Route('/register', name: 'app_register')]
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager
-    ): Response
-    {
+    ): Response {
+        if ($this->getUser()) {
+            $this->addFlash("info", "Vous êtes déjà connecté");
+            return $this->redirectToRoute('app_article_home');
+        }
         $user = new User();
         $form = $this->createForm(RegistrationForm::class, $user);
         $form->handleRequest($request);
@@ -61,8 +62,7 @@ class RegistrationController extends AbstractController
     public function verifyUserEmail(
         Request $request,
         TranslatorInterface $translator
-    ): Response
-    {
+    ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         try {
             $user = $this->getUser();

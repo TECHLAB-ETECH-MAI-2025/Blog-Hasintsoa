@@ -1,0 +1,64 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Gestion des utilisateurs{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+		<h1 class="h2">Gestion des utilisateurs</h1>
+		<div class="mb-2 mb-md-0">
+			<a href="{{ path('app_admin_users_new') }}" class="btn btn-sm btn-outline-secondary">
+				Nouvel utilisateur
+			</a>
+		</div>
+	</div>
+	<div class="container">
+		<div class="border rounded-xl">
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">ID</th>
+						<th scope="col">Nom</th>
+						<th scope="col">Email</th>
+						<th scope="col">Rôles</th>
+						<th scope="col">Vérifié</th>
+						<th scope="col">Date d'inscription</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for user in users %}
+					<tr>
+						<th scope="row">{{ user.id }}</th>
+						<td>{{ user.fullName }}</td>
+						<td>{{ user.email }}</td>
+						<td>
+						{% for role in user.roles %}
+							{% if role == 'ROLE_ADMIN' %}
+								Admin
+							{% elseif role == 'ROLE_SUPER_ADMIN' %}
+								Super Admin
+							{% elseif role == 'ROLE_USER' %}
+								Utilisateur
+							{% else %}
+								{{ role }}
+							{% endif %}
+						{% endfor %}
+						</td>
+						<td>
+							{% if user.isVerified %}Oui{% else %}Non{% endif %}
+						</td>
+						<td>{{ user.createdAt|date('d/m/Y') }}</td>
+						<td>
+							<button type="button" class="btn btn-outline-primary">Voir</button>
+						</td>
+					</tr>
+					{% else %}
+					<tr>
+						<td colspan="7">no records found</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock %}

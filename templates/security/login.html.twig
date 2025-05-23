@@ -31,12 +31,14 @@
                     {% endif %}
 
                     <div class="form-floating mb-3">
-                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" placeholder="Email" required autofocus>
+                        {# <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" placeholder="Email" required autofocus> #}
+                        <input type="email" value="{{ last_username|default('admin@domain.com') }}" name="email" id="inputEmail" class="form-control" autocomplete="email" placeholder="Email" required autofocus>
                         <label for="inputEmail">Email</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" placeholder="Mot de passe" required>
+                        {# <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" placeholder="Mot de passe" required> #}
+                        <input type="password" value="Admin@123" name="password" id="inputPassword" class="form-control" autocomplete="current-password" placeholder="Mot de passe" required>
                         <label for="inputPassword">Mot de passe</label>
                     </div>
 
@@ -44,7 +46,8 @@
 
                     <div class="d-flex justify-content-between">
                         <div class="form-check mb-3">
-                            <input class="form-check-input" id="checkbox-remember-me" type="checkbox" name="_remember_me">
+                            {# <input class="form-check-input" id="checkbox-remember-me" type="checkbox" name="_remember_me"> #}
+                            <input class="form-check-input" id="checkbox-remember-me" type="checkbox" name="_remember_me" checked>
                             <label class="form-check-label" for="checkbox-remember-me">
                                 Se souvenir de moi
                             </label>

@@ -1,0 +1,73 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Administration{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+		<h1 class="h2">Tableau de bord d'administration</h1>
+		<div class="mb-2 mb-md-0">
+			<a href="{{ path('app_admin_users_new') }}" class="btn btn-sm btn-outline-secondary">
+				<i class="fa-solid fa-user-plus"></i>
+				Créer un nouvel utilisateur
+			</a>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-md-6 col-sm-6">
+				<div class="card">
+					<div class="card-body">
+						<div class="d-flex justify-content-between align-items-center">
+							<span>
+								<i class="fa-solid fa-2xl fa-users me-2"></i>
+								Utilisateurs
+							</span>
+							<span class="fw-bold fs-2">
+								{{ userCount|default('0') }}
+							</span>
+						</div>
+					</div>
+					<div class="card-footer">
+						Voir les détails
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6 col-sm-6">
+				<div class="card">
+					<div class="card-body">
+						<div class="d-flex justify-content-between align-items-center">
+							<span>
+								<i class="fa-solid fa-2xl fa-user-check me-2"></i>
+								Utilisateurs vérifiés
+							</span>
+							<span class="fw-bold fs-2">
+								{{ verifiedUserCount|default('0') }}
+							</span>
+						</div>
+					</div>
+					<div class="card-footer">
+						Voir les détails
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6 col-sm-6">
+				<div class="card">
+					<div class="card-body">
+						<div class="d-flex justify-content-between align-items-center">
+							<span>
+								<i class="fa-solid fa-2xl fa-users-gear me-2"></i>
+								Administrateurs
+							</span>
+							<span class="fw-bold fs-2">
+								{{ adminCount|default('0') }}
+							</span>
+						</div>
+					</div>
+					<div class="card-footer">
+						Voir les détails
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

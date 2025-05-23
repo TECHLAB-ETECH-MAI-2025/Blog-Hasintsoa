@@ -1,0 +1,15 @@
+@import "~bootstrap/scss/bootstrap";
+@import "~datatables.net-bs5/css/dataTables.bootstrap5.min.css";
+@import "~datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+@import "bootstrap/scss/_variables.scss";
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.logout-btn {
+  &:hover {
+    background-color: $red-400;
+  }
+}

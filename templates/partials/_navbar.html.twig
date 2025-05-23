@@ -18,9 +18,16 @@
 						Liste des catégories
 					</a>
 				</li>
+				{% if is_granted('ROLE_ADMIN') %}
+				<li class="nav-item">
+					<a href="{{ path('app_admin') }}" class="nav-link">
+						Administration
+					</a>
+				</li>
+				{% endif %}
 			</ul>
 			<div class="ms-auto">
-				<a href="{{ path('app_article_new') }}" class="btn btn-primary">Nouvelle Article</a>
+				{% include "partials/_user.html.twig" %}
 			</div>
 		</div>
 	</div>

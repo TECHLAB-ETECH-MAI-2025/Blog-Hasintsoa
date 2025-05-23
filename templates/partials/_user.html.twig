@@ -1,0 +1,39 @@
+{% if app.user %}
+<div class="ms-3 dropdown">
+	<a class="p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown">
+		<img class="rounded-circle" src="/images/profile_image.jpg" width="35" height="35" alt="profile image">
+	</a>
+
+	<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+		<li class="px-3 mb-3">
+            <p class="small m-0">
+                {{ app.user.fullName|default(app.user.email) }}
+            </p>
+		</li>
+		<li>
+			<hr class="dropdown-divider"></li>
+		<li>
+			<a class="dropdown-item" href="{{ path('app_profile') }}">
+                <i class="fa-solid fa-circle-user fa-fw me-2"></i>
+                Mon profil
+            </a>
+		</li>
+		<li>
+			<a class="dropdown-item logout-btn rounded" href="{{ path('app_logout') }}">
+                <i class="fa-solid fa-power-off fa-fw me-2"></i>
+                Déconnexion
+            </a>
+		</li>
+	</ul>
+</div>
+{% else %}
+<div class="btn-group">
+	<a href="{{ path('app_login') }}" class="btn btn-outline-primary">
+		Se connecter
+	</a>
+	<a href="{{ path('app_register') }}" class="btn btn-outline-secondary">
+		S'inscrire
+	</a>
+</div>
+{% endif %}
+

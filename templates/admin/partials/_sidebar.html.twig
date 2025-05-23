@@ -1,0 +1,37 @@
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary" style="width: 280px">
+	<a href="{{ path('app_admin') }}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+		<span class="fs-4">Admin Symfony Blog</span>
+	</a>
+	<hr>
+	<ul class="nav nav-pills flex-column mb-auto">
+		<li class="nav-item">
+			<a href="{{ path('app_admin') }}" class="nav-link {% if app.request.attributes.get('_route') == 'app_admin' %}active{% else %}link-body-emphasis{% endif %}">
+				<i class="fa-solid fa-chart-line me-2"></i>
+				Tableau de bord
+			</a>
+		</li>
+		<li class="nav-item">
+			<a href="{{ path('app_admin_users') }}" class="nav-link {% if app.request.attributes.get('_route') == 'app_admin_users' %}active{% else %}link-body-emphasis{% endif %}">
+				<i class="fa-solid fa-users me-2"></i>
+				Gestion des utilisateurs
+			</a>
+		</li>
+		<li class="nav-item">
+			<a href="{{ path('app_category_index') }}" class="nav-link {% if app.request.attributes.get('_route') == 'app_category_index' %}active{% else %}link-body-emphasis{% endif %}">
+				<i class="fa-solid fa-ticket me-2"></i>
+				Liste des catégories
+			</a>
+		</li>
+		<li class="nav-item">
+			<a href="#" class="nav-link link-body-emphasis">
+				<i class="fa-solid fa-book me-2"></i>
+				Articles
+			</a>
+		</li>
+	</ul>
+	<a href="{{ path('app_article_home') }}" class="btn btn-outline-primary">
+		Retour au site
+	</a>
+	<hr>
+	{% include "admin/partials/_user.html.twig" %}
+</div>

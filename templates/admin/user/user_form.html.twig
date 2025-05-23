@@ -1,0 +1,55 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{ user.id ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur' }}
+{% endblock %}
+
+{% block body %}
+	<div class="pt-3 pb-2 mb-3 border-bottom">
+		<h1 class="h2">
+			{{ user.id ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur' }}
+		</h1>
+	</div>
+	<div class="container col-11 col-md-10">
+		{{ form_start(form, {
+			'attr': {
+				'class' : "row g-3"
+			}
+		}) }}
+
+		{{ form_row(form.email) }}
+
+		{{ form_row(form.firstName, {
+			'row_attr': {
+				'class': "col-md-6"
+			}
+		}) }}
+
+		{{ form_row(form.lastName, {
+			'row_attr': {
+				'class': "col-md-6"
+			}
+		}) }}
+
+		{{ form_row(form.plainPassword) }}
+
+		{{ form_row(form.roles, {
+			'row_attr': {
+				'class': "col-md-6 mb-3"
+			}
+		}) }}
+
+		{{ form_row(form.isVerified, {
+			'row_attr': {
+				'class': "col-md-6 my-auto"
+			}
+		}) }}
+
+		<button type="submit" class="btn btn-primary w-100 mt-3">
+			{{ user.id ? 'Mettre à jour' : 'Créer' }}
+		</button>
+
+		{{ form_end(form) }}
+	</div>
+
+{% endblock %}

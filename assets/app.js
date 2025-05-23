@@ -1,4 +1,5 @@
 import "./styles/app.scss";
+import "bootstrap";
 import {Tooltip} from "bootstrap";
 
 document.addEventListener("DOMContentLoaded", () => {
