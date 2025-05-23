@@ -5,15 +5,67 @@ namespace App\DataFixtures;
 use App\Entity\Article;
 use App\Entity\Category;
 use App\Entity\Comment;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(
+        private readonly UserPasswordHasherInterface $passwordHasher
+    ) {}
+
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create("fr_FR");
+        $users = [];
+
+        $userAdmin = new User();
+        $userAdmin->setEmail("admin@domain.com")
+            ->setPassword($this->passwordHasher->hashPassword(
+                $userAdmin,
+                "Admin@123"
+            ))
+            ->setFirstName("Admin")
+            ->setLastName("User")
+            ->setIsVerified(true)
+            ->setRoles(["ROLE_USER", "ROLE_ADMIN"])
+            ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeThisYear("now")));
+        $manager->persist($userAdmin);
+        $users[$userAdmin->getEmail()] = $userAdmin;
+
+        $userMain = new User();
+        $userAdmin->setEmail("user@domain.com")
+            ->setPassword($this->passwordHasher->hashPassword(
+                $userMain,
+                "Admin@123"
+            ))
+            ->setFirstName("Main")
+            ->setLastName("User")
+            ->setIsVerified(true)
+            ->setRoles(["ROLE_USER"])
+            ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeThisYear("now")));
+        $manager->persist($userMain);
+        $users[$userMain->getEmail()] = $userMain;
+
+        for ($i = 0; $i <= 10; $i++) {
+            $user = new User();
+            $user->setEmail($faker->unique()->email)
+                ->setPassword($this->passwordHasher->hashPassword(
+                    $user,
+                    "123456789"
+                ))
+                ->setFirstName($faker->unique()->firstName)
+                ->setLastName($faker->unique()->lastName)
+                ->setIsVerified(true)
+                ->setRoles(["ROLE_USER"])
+                ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeThisYear("now")));
+            $manager->persist($user);
+            $users[$user->getEmail()] = $user;
+        }
+
         $categoriesData = [
             [
                 'title' => 'Intelligence Artificielle',
@@ -56,6 +108,7 @@ class AppFixtures extends Fixture
                 'description' => 'Articles traitant des enjeux liés à la santé des océans et à la conservation de la vie marine.',
             ]
         ];
+
         $categories = [];
         foreach ($categoriesData as $data) {
             $category = (new Category())
@@ -157,7 +210,6 @@ class AppFixtures extends Fixture
                 if (isset($categories[$categoryName]))
                     $article->addCategory($categories[$categoryName]);
             }
-            $comments = [];
             for ($i = 0; $i <= $faker->numberBetween(1, 3); $i++) {
                 $comment = (new Comment())
                     ->setAuthor($faker->userName())
