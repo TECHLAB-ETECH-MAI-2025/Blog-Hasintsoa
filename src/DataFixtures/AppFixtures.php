@@ -34,10 +34,9 @@ class AppFixtures extends Fixture
             ->setRoles(["ROLE_USER", "ROLE_ADMIN"])
             ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeThisYear("now")));
         $manager->persist($userAdmin);
-        $users[$userAdmin->getEmail()] = $userAdmin;
 
         $userMain = new User();
-        $userAdmin->setEmail("user@domain.com")
+        $userMain->setEmail("user@domain.com")
             ->setPassword($this->passwordHasher->hashPassword(
                 $userMain,
                 "Admin@123"
@@ -48,22 +47,24 @@ class AppFixtures extends Fixture
             ->setRoles(["ROLE_USER"])
             ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeThisYear("now")));
         $manager->persist($userMain);
-        $users[$userMain->getEmail()] = $userMain;
+        $users[] = $userMain;
+
+        $fakerUnique = $faker->unique();
 
         for ($i = 0; $i <= 10; $i++) {
             $user = new User();
-            $user->setEmail($faker->unique()->email)
+            $user->setEmail($fakerUnique->email)
                 ->setPassword($this->passwordHasher->hashPassword(
                     $user,
                     "123456789"
                 ))
-                ->setFirstName($faker->unique()->firstName)
-                ->setLastName($faker->unique()->lastName)
+                ->setFirstName($fakerUnique->firstName)
+                ->setLastName($fakerUnique->lastName)
                 ->setIsVerified(true)
                 ->setRoles(["ROLE_USER"])
                 ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeThisYear("now")));
             $manager->persist($user);
-            $users[$user->getEmail()] = $user;
+            $users[] = $user;
         }
 
         $categoriesData = [
@@ -199,12 +200,13 @@ class AppFixtures extends Fixture
             [
                 'title' => 'Les efforts internationaux pour la conservation des récifs coralliens',
                 'categories' => ['Océans et Biodiversité Marine', 'Environnement', 'Nature'],
-            ],
+            ]
         ];
         foreach ($ArticlesData as $articleData) {
             $article = (new Article())
                 ->setTitle($articleData['title'])
                 ->setContent($faker->paragraphs(3, true))
+                ->setAuthor($users[$faker->numberBetween(0, count($users) - 1)])
                 ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeThisYear("now")));
             foreach ($articleData['categories'] as $categoryName) {
                 if (isset($categories[$categoryName]))
@@ -212,7 +214,8 @@ class AppFixtures extends Fixture
             }
             for ($i = 0; $i <= $faker->numberBetween(1, 3); $i++) {
                 $comment = (new Comment())
-                    ->setAuthor($faker->userName())
+                    ->setAuthor($users[$faker->numberBetween(0, count($users) - 1)])
+                    ->setArticle($article)
                     ->setContent($faker->paragraph())
                     ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeThisYear("now")));
                 $manager->persist($comment);

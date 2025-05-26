@@ -39,7 +39,7 @@ final class ArticleController extends AbstractController
             2 => 'categories',
             3 => 'commentsCount',
             4 => 'likesCount',
-            5 => 'ratingsSum',
+            5 => 'ratingsAvg',
             6 => 'a.createdAt',
         ];
         $orderColumn = $columns[$orders[0]['column'] ?? 0] ?? 'a.id';
@@ -69,7 +69,7 @@ final class ArticleController extends AbstractController
                 'categories' => implode(', ', $categoryNames),
                 'commentsCount' => $article["commentsCount"],
                 'likesCount' => $article["likesCount"],
-                'ratingsSum' => $article["ratingsSum"] !== null ? round($article["ratingsSum"], 1) : 0,
+                'ratingsAvg' => $article["ratingsAvg"] !== null ? round($article["ratingsAvg"], 1) : 0,
                 'createdAt' => $article[0]->getCreatedAt()->format('d/m/Y H:i'),
                 'actions' => $this->renderView('article/_actions.html.twig', [
                     'article' => $article[0]
@@ -97,6 +97,7 @@ final class ArticleController extends AbstractController
         $form = $this->createForm(CommentForm::class, $comment);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setAuthor($this->getUser());
             $comment->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($comment);
             $entityManager->flush();
@@ -126,10 +127,10 @@ final class ArticleController extends AbstractController
         EntityManagerInterface $entityManager,
         ArticleLikeRepository $likeRepository
     ): JsonResponse {
-        $ipAddress = $request->getClientIp();
+        $connectedUser = $this->getUser();
         $existingLike = $likeRepository->findOneBy([
             "article" => $article,
-            "ipAddress" => $ipAddress
+            "author" => $connectedUser
         ]);
         $liked = true;
         if ($existingLike) {
@@ -138,7 +139,8 @@ final class ArticleController extends AbstractController
         } else {
             $like = new ArticleLike();
             $like->setArticle($article);
-            $like->setIpAddress($ipAddress);
+            $like->setIpAddress($request->getClientIp());
+            $like->setAuthor($connectedUser);
             $like->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($like);
         }
@@ -158,10 +160,10 @@ final class ArticleController extends AbstractController
         EntityManagerInterface $entityManager,
         ArticleRatingRepository $articleRatingRepository
     ): JsonResponse {
-        $ipAddress = $request->getClientIp();
+        $connectedUser = $this->getUser();
         $existingRates = $articleRatingRepository->findOneBy([
             "article" => $article,
-            "ipAddress" => $ipAddress
+            "author" => $connectedUser
         ]);
         $rateLength = $request->request->getInt('rating', 1);
         if ($existingRates) {
@@ -170,7 +172,8 @@ final class ArticleController extends AbstractController
             $rates = new ArticleRating();
             $rates->setArticle($article);
             $rates->setRating($rateLength);
-            $rates->setIpAddress($ipAddress);
+            $rates->setAuthor($connectedUser);
+            $rates->setIpAddress($request->getClientIp());
             $rates->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($rates);
         }

@@ -58,7 +58,7 @@ class ArticleRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder("a")
             ->addSelect('COUNT(com.id) AS commentsCount')
             ->addSelect('COUNT(l.id) as likesCount')
-            ->addSelect('AVG(r.rating) as ratingsSum')
+            ->addSelect('AVG(r.rating) as ratingsAvg')
             ->leftJoin("a.categories", "c")
             ->leftJoin('a.comments', 'com')
             ->leftJoin('a.likes', 'l')
@@ -85,8 +85,8 @@ class ArticleRepository extends ServiceEntityRepository
             $qb->orderBy('likesCount', $orderDir);
         } elseif ($orderColumn === 'categories') {
             $qb->orderBy('c.title', $orderDir);
-        } elseif ($orderColumn === 'ratingsSum') {
-            $qb->orderBy("ratingsSum", $orderDir);
+        } elseif ($orderColumn === 'ratingsAvg') {
+            $qb->orderBy("ratingsAvg", $orderDir);
         } else {
             $qb->orderBy($orderColumn, $orderDir);
         }

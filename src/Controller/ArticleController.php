@@ -32,6 +32,7 @@ final class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $article->setAuthor($this->getUser());
             $article->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($article);
             $entityManager->flush();
