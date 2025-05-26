@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -45,6 +47,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?bool $isVerified = null;
+
+    /**
+     * @var Collection<int, ArticleLike>
+     */
+    #[ORM\OneToMany(targetEntity: ArticleLike::class, mappedBy: 'author', orphanRemoval: true)]
+    private Collection $articleLikes;
+
+    /**
+     * @var Collection<int, ArticleRating>
+     */
+    #[ORM\OneToMany(targetEntity: ArticleRating::class, mappedBy: 'author', orphanRemoval: true)]
+    private Collection $articleRatings;
+
+    /**
+     * @var Collection<int, Article>
+     */
+    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'author')]
+    private Collection $articles;
+
+    public function __construct()
+    {
+        $this->articleLikes = new ArrayCollection();
+        $this->articleRatings = new ArrayCollection();
+        $this->articles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -171,6 +198,96 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ArticleLike>
+     */
+    public function getArticleLikes(): Collection
+    {
+        return $this->articleLikes;
+    }
+
+    public function addArticleLike(ArticleLike $articleLike): static
+    {
+        if (!$this->articleLikes->contains($articleLike)) {
+            $this->articleLikes->add($articleLike);
+            $articleLike->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticleLike(ArticleLike $articleLike): static
+    {
+        if ($this->articleLikes->removeElement($articleLike)) {
+            // set the owning side to null (unless already changed)
+            if ($articleLike->getAuthor() === $this) {
+                $articleLike->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ArticleRating>
+     */
+    public function getArticleRatings(): Collection
+    {
+        return $this->articleRatings;
+    }
+
+    public function addArticleRating(ArticleRating $articleRating): static
+    {
+        if (!$this->articleRatings->contains($articleRating)) {
+            $this->articleRatings->add($articleRating);
+            $articleRating->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticleRating(ArticleRating $articleRating): static
+    {
+        if ($this->articleRatings->removeElement($articleRating)) {
+            // set the owning side to null (unless already changed)
+            if ($articleRating->getAuthor() === $this) {
+                $articleRating->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Article>
+     */
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    public function addArticle(Article $article): static
+    {
+        if (!$this->articles->contains($article)) {
+            $this->articles->add($article);
+            $article->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticle(Article $article): static
+    {
+        if ($this->articles->removeElement($article)) {
+            // set the owning side to null (unless already changed)
+            if ($article->getAuthor() === $this) {
+                $article->setAuthor(null);
+            }
+        }
 
         return $this;
     }

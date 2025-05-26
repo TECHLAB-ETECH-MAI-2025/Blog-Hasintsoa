@@ -57,6 +57,10 @@ class Article
     #[ORM\OneToMany(targetEntity: ArticleRating::class, mappedBy: 'article', orphanRemoval: true)]
     private Collection $ratings;
 
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -216,6 +220,18 @@ class Article
                 $rating->setArticle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
 
         return $this;
     }
