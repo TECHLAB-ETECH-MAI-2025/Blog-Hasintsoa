@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chat avec {{ receiver.email }}{% endblock %}
+
+{% block body %}
+    Chat avec {{ receiver.email }}
+
+        {% for message in messages %}
+            {{ message.sender.email }} ({{ message.createdAt|date('H:i:s') }}):
+            {{ message.content }}
+        {% endfor %}
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    {{ form_end(form) }}
+    
+{% endblock %}
+
+{% block script %}
+<script>
+
+    if (window.location.protocol !== 'file:') {
+        setInterval(() => {
+            fetch("{{ path('app_chat', {'receiverId': receiver.id}) }}", {
+                method: 'GET',
+                headers: {
+                    'Accept': 'text/html',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur réseau : ' + response.status);
+                }
+                return response.text();
+            })
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const messages = doc.getElementById('chat-messages');
+                if (messages) {
+                    document.getElementById('chat-messages').innerHTML = messages.innerHTML;
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors du polling :', error);
+                document.getElementById('chat-messages').innerHTML +=
+                    '<div style="color: red;">Erreur de chargement des messages. Veuillez réessayer.</div>';
+            });
+        }, 5000);
+    } else {
+        console.log("Mode local détecté - polling désactivé pour éviter les erreurs CORS");
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('chat-messages')) {
+                document.getElementById('chat-messages').innerHTML += 
+                    '<div style="color: blue; padding: 10px; background-color: #f0f0f0; margin-top: 10px; border-radius: 5px;">' +
+                    '<strong>Note:</strong> Le polling des messages est désactivé en mode local. ' +
+                    'Pour une expérience complète, veuillez servir cette page via un serveur web.' +
+                    '</div>';
+            }
+        });
+    }
+</script>
+{% endblock %}
