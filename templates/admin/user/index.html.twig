@@ -1,6 +1,12 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}Gestion des utilisateurs{% endblock %}
+{% block title %}Gestion des utilisateurs
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('user_list') }}
+{% endblock %}
 
 {% block body %}
 	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -12,8 +18,8 @@
 		</div>
 	</div>
 	<div class="container">
-		<div class="border rounded-xl">
-			<table class="table">
+		<div class="border rounded-xl px-2">
+			<table class="table" id="users-table">
 				<thead>
 					<tr>
 						<th scope="col">ID</th>
@@ -25,39 +31,7 @@
 						<th scope="col">Actions</th>
 					</tr>
 				</thead>
-				<tbody>
-					{% for user in users %}
-					<tr>
-						<th scope="row">{{ user.id }}</th>
-						<td>{{ user.fullName }}</td>
-						<td>{{ user.email }}</td>
-						<td>
-						{% for role in user.roles %}
-							{% if role == 'ROLE_ADMIN' %}
-								Admin
-							{% elseif role == 'ROLE_SUPER_ADMIN' %}
-								Super Admin
-							{% elseif role == 'ROLE_USER' %}
-								Utilisateur
-							{% else %}
-								{{ role }}
-							{% endif %}
-						{% endfor %}
-						</td>
-						<td>
-							{% if user.isVerified %}Oui{% else %}Non{% endif %}
-						</td>
-						<td>{{ user.createdAt|date('d/m/Y') }}</td>
-						<td>
-							<button type="button" class="btn btn-outline-primary">Voir</button>
-						</td>
-					</tr>
-					{% else %}
-					<tr>
-						<td colspan="7">no records found</td>
-					</tr>
-					{% endfor %}
-				</tbody>
+				<tbody></tbody>
 			</table>
 		</div>
 	</div>

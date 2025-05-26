@@ -20,12 +20,21 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
+    // MAIN ENTRY CONFIG
     .addEntry('app', './assets/app.js')
     .addEntry('admin_app', './assets/admin.js')
-    .addEntry('article_comment', './assets/js/article_comment.js')
-    .addEntry('article_list', './assets/js/article_list.js')
-    .addEntry('article_like', './assets/js/article_like.js')
-    .addEntry('article_rating', './assets/js/article_rating.js')
+
+    // ARTICLE ENTRY CONFIG
+    .addEntry('article_comment', './assets/js/article/comment.js')
+    .addEntry('article_list', './assets/js/article/list.js')
+    .addEntry('article_like', './assets/js/article/like.js')
+    .addEntry('article_rating', './assets/js/article/rating.js')
+
+    // CATEGORY ENTRY CONFIG
+    .addEntry('category_list', './assets/js/category/list.js')
+
+    // USER ENTRY CONFIG
+    .addEntry('user_list', './assets/js/user/list.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

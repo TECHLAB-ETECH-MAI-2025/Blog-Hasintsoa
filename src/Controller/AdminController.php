@@ -30,11 +30,9 @@ final class AdminController extends AbstractController
     }
 
     #[Route('/users', name: 'app_admin_users', methods: ["GET"])]
-    public function users(UserRepository $userRepository): Response
+    public function users(): Response
     {
-        return $this->render('admin/user/index.html.twig', [
-            'users' => $userRepository->findAll()
-        ]);
+        return $this->render('admin/user/index.html.twig', []);
     }
 
     #[Route('/users/new', name: 'app_admin_users_new', methods: ["GET", "POST"])]

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -55,13 +56,13 @@ class ArticleRepository extends ServiceEntityRepository
     public function findForDataTable($start, $length, $search, $orderColumn, $orderDir): array
     {
         $qb = $this->createQueryBuilder("a")
+            ->addSelect('COUNT(com.id) AS commentsCount')
+            ->addSelect('COUNT(l.id) as likesCount')
+            ->addSelect('AVG(r.rating) as ratingsSum')
             ->leftJoin("a.categories", "c")
             ->leftJoin('a.comments', 'com')
             ->leftJoin('a.likes', 'l')
             ->leftJoin('a.ratings', 'r')
-            ->addSelect('COUNT(com.id) AS commentsCount')
-            ->addSelect('COUNT(l.id) as likesCount')
-            ->addSelect('AVG(r.rating) as ratingsSum')
             ->groupBy("a.id", "c.title");
         if ($search) {
             $qb->andWhere('a.title LIKE :search OR c.title LIKE :search')
@@ -96,6 +97,46 @@ class ArticleRepository extends ServiceEntityRepository
             'totalCount' => $totalCount,
             'filteredCount' => $filteredCount
         ];
+    }
+    /**
+     * Paginate Articles for DataTable
+     * This method is used to paginate articles for a DataTable with search and ordering capabilities.
+     * @param int $start
+     * @param int $length
+     * @param array $search
+     * @param array $columns
+     * @param array $orders
+     * @return Paginator<Article>
+     */
+    public function paginate(
+        int $start,
+        int $length,
+        ?string $search,
+        array $columns,
+        ?array $orders
+    ): Paginator {
+        $qb = $this->createQueryBuilder('a')
+            ->select('a.id', 'COUNT(l.id) as likesCount')
+            ->leftJoin("a.categories", "c")
+            ->leftJoin('a.likes', 'l')
+            ->addSelect('c AS categoriesTitle')
+            ->groupBy('a.id')
+            ->orderBy('a.createdAt', 'DESC');
+
+        if ($search) {
+            $qb->andWhere('a.title LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+
+        $qb->orderBy(
+            $columns[$orders['column'] ?? 0],
+            $orders['dir'] ?? 'desc'
+        );
+
+        return new Paginator(
+            $qb->setFirstResult($start)
+                ->setMaxResults($length)
+        );
     }
 
     /**

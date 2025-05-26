@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -33,7 +33,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    public function findUserByEmail($email): User
+    /**
+     * Find user by email
+     * @param string $email
+     * @return User
+     */
+    public function findUserByEmail(string $email): User
     {
         return $this->createQueryBuilder('u')
             ->where('u.email = :email')
@@ -43,6 +48,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
 
+    /**
+     * Count all Admin Users
+     * @return int
+     */
     public function countAdmins(): int
     {
         $sql = 'SELECT COUNT(u.id) FROM "user" AS u WHERE CAST(u.roles AS TEXT) LIKE :role_admin OR CAST(u.roles AS TEXT) LIKE :role_super_admin';
@@ -54,6 +63,45 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 "role_admin" => '%"ROLE_ADMIN"%',
                 "role_super_admin" => '%"ROLE_SUPER_ADMIN"%',
             ])->fetchOne();
+    }
+
+    /**
+     * Paginate Users
+     * @param int $start
+     * @param int $length
+     * @param string $search
+     * @param array $columns
+     * @param array $orders
+     * @return Paginator<User>
+     */
+    public function paginate(
+        int $start,
+        int $length,
+        ?string $search,
+        array $columns,
+        ?array $orders
+    ): Paginator {
+        $qb = $this->createQueryBuilder('u');
+
+        if ($search) {
+            $qb->andWhere('u.email LIKE :search')
+                ->orWhere('u.firstName LIKE :search')
+                ->orWhere('u.lastName LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+
+        $qb->orderBy(
+            'u.' . $columns[$orders['column'] ?? 0],
+            $orders['dir'] ?? 'desc'
+        );
+
+        return new Paginator(
+            $qb->setFirstResult($start)
+                ->setMaxResults($length)
+                ->getQuery()
+                ->setHint(Paginator::HINT_ENABLE_DISTINCT, false),
+            false
+        );
     }
 
     //    /**

@@ -1,4 +1,3 @@
-
 <div class="d-flex">
 	<a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-success">Modifier</a>
 	<form method="post" class="d-inline-block" action="{{ path('app_article_delete', {'id': article.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer l article {{ article.title }} ?');">

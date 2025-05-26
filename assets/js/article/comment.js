@@ -1,6 +1,5 @@
 import jQuery from "jquery";
 import { Toast } from "bootstrap";
-import { wait } from "../app.js";
 
 jQuery(function ($) {
   const $commentForm = $("#comment-form");

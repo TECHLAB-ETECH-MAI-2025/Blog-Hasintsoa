@@ -17,11 +17,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class CategoryController extends AbstractController
 {
     #[Route(name: 'app_category_index', methods: ['GET'])]
-    public function index(CategoryRepository $categoryRepository): Response
+    public function index(): Response
     {
-        return $this->render('category/index.html.twig', [
-            'categories' => $categoryRepository->findAll()
-        ]);
+        return $this->render('category/index.html.twig', []);
     }
 
     #[Route('/new', name: 'app_category_new', methods: ['GET', 'POST'])]
@@ -74,7 +72,7 @@ final class CategoryController extends AbstractController
     #[Route('/{id}', name: 'app_category_delete', methods: ['POST'])]
     public function delete(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
         }
