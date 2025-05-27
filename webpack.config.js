@@ -36,6 +36,9 @@ Encore
     // USER ENTRY CONFIG
     .addEntry('user_list', './assets/js/user/list.js')
 
+    // CHAT ENTRY CONFIG
+    .addEntry('chat_send', './assets/js/chat/sendMessage.js')
+
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 

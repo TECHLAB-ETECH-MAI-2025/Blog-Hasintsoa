@@ -104,6 +104,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         );
     }
 
+    /**
+     * Get AllUsers without Connected User by email
+     * @param string $email
+     * @return User[]
+     */
+    public function getAllUsersWithoutConnected(string $email): array
+    {
+        return $this->createQueryBuilder('u')
+        ->where('u.email != :email')
+        ->setParameter('email', $email)
+        ->getQuery()
+        ->getResult();
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

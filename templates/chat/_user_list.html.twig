@@ -1,0 +1,7 @@
+<div class="list-group">
+{% for user in users %}
+    <a href="{{ path('app_chat_show', {'receiverId': user.id}) }}" class="list-group-item{% if receiverId == user.id %} active{% endif %}">
+        {{ user.email }}
+    </a>
+{% endfor %}
+</div>

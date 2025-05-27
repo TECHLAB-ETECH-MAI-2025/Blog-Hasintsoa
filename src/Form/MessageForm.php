@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class MessageForm extends AbstractType
 {
@@ -17,7 +19,17 @@ class MessageForm extends AbstractType
                 'label' => 'Votre message',
                 'attr' => [
                     'rows' => 4
-                ]
+                ],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Ce champ ne doit pas être vide',
+                    ]),
+                    new Length([
+                        'min' => 2,
+                        'minMessage' => 'Ce champ doit être au minimum {{ limit }} characters',
+                        'max' => 4096,
+                    ]),
+                ],
             ])
         ;
     }
