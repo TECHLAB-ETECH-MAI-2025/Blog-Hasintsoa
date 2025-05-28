@@ -53,15 +53,14 @@ final class ArticleController extends AbstractController
         ArticleLikeRepository $likeRepository,
         ArticleRatingRepository $articleRatingRepository
     ): Response {
-        $ipAddress = $request->getClientIp();
         $isLiked = $likeRepository->findOneBy([
             'article' => $article,
-            'ipAddress' => $ipAddress
+            'author' => $this->getUser()
         ]) !== null;
         $ratingIp = 0;
         $articleRating = $articleRatingRepository->findOneBy([
             'article' => $article,
-            'ipAddress' => $ipAddress
+            'author' => $this->getUser()
         ]);
         if ($articleRating) {
             $ratingIp = $articleRating->getRating();

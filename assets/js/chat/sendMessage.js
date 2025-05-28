@@ -2,28 +2,26 @@ import jQuery from "jquery";
 import { Toast } from "bootstrap";
 
 jQuery(function ($) {
-  const $commentForm = $("#comment-form");
-  const $commentsList = $("#comments-list");
-  const $commentsCount = $("#comments-count");
-  $commentForm.on("submit", function (event) {
+  const $messageForm = $("#message-form");
+  const $messagesContainer = $("#messages-container");
+  const dataChatPath = $messageForm.data("chat-user");
+  $messageForm.on("submit", (event) => {
     event.preventDefault();
     event.stopPropagation();
-    const $submitBtn = $commentForm.find('button[type="submit"]');
+    const $submitBtn = $messageForm.find('button[type="submit"]');
     const originalBtnText = $submitBtn.html();
     $submitBtn.html("Envoi en cours...").prop("disabled", true);
     $.ajax({
       method: "POST",
-      url: $commentForm.attr("action"),
-      data: $commentForm.serialize(),
+      url: $messageForm.attr("action"),
+      data: $messageForm.serialize(),
       dataType: "json",
       success: function (response) {
         if ($("#empty-text")) {
           $("#empty-text").hide();
         }
-        $commentsList.prepend(response.commentHtml);
-        $commentsCount.text(response.commentsCount);
-        $commentForm[0].reset();
-        showAlert("success", "Votre commentaire a été publié avec succès !");
+        $messagesContainer.append(response.messageHtml)
+        $messageForm[0].reset();
         $(".invalid-feedback").remove();
         $(".form-control").removeClass("is-invalid");
       },
@@ -33,12 +31,12 @@ jQuery(function ($) {
           responseJSON: { error }
         } = err;
         if (status === 400) {
+          console.log(error)
           $(".invalid-feedback").remove();
-          showAlert("danger", "Veuillez remplir le formulaire correctement !");
           if (error.content)
-            showValidationMessage("#content-row", error.content, "#comment_form_content");
+            showValidationMessage("#content-row", error.content, "#message_form_content");
         } else {
-          showAlert("danger", "Une erreur est survenue lors de l'envoi du commentaire !");
+          showAlert("danger", "Une erreur est survenue lors de l'envoi du message !");
         }
       },
       complete: () => {

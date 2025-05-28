@@ -10,6 +10,11 @@
 {% endblock %}
 
 {% block body %}
+
+	<form action="{{ path('ping') }}" method="post">
+		<button type="submit" class="btn btn-primary">Test Mercure</button>
+	</form>
+
 	<div class="container col-md-10 pt-3">
 		{% for article in articles %}
 			<div class="border border-secondary rounded p-3 my-2">
@@ -30,9 +35,9 @@
 						</span>
 					{% endfor %}
 				{% endif %}
-				<div class="d-flex justify-content-end mt-2">
-					{{ include('article/_like_btn.html.twig') }}
-				</div>
+				{# <div class="d-flex justify-content-end mt-2"> #}
+					{# {{ include('article/_like_btn.html.twig') }} #}
+				{# </div> #}
 			</div>
 		{% else %}
 			<div>Pas D'article pour le moment</div>
@@ -43,3 +48,12 @@
 	</div>
 {% endblock %}
 
+{% block script %}
+	<script>
+		const eventSource = new EventSource("{{ mercure('http://localhost:8000/ping')|escape('js') }}");
+		eventSource.onmessage = event => {
+			// Will be called every time an update is published by the server
+			console.log(event.data);
+		}
+</script>
+{% endblock %}
