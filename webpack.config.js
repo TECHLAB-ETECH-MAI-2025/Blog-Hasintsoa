@@ -39,6 +39,9 @@ Encore
     // CHAT ENTRY CONFIG
     .addEntry('chat_send', './assets/js/chat/sendMessage.js')
 
+    // DEVISE ENTRY CONFIG
+    .addEntry('devise_conversion', './assets/js/devise/conversion.js')
+
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 

@@ -15,7 +15,7 @@ final class HomeController extends AbstractController
 {
     public function __construct(
         private readonly HubInterface $hub
-    ){}
+    ) {}
 
     #[Route(path: "/", name: 'app_article_home', methods: ['GET'])]
     public function index(
