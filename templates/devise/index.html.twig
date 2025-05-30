@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Conversion de devise
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('devise_conversion') }}
+{% endblock %}
+
+{% block body %}
+	<div class="container col-md-6 pt-3">
+        <div class="card">
+            <div class="card-header">
+		        <h1 class="fs-3 fw-semibold text-center">
+                    Calculatrice de taux de change
+                </h1>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {
+                    'attr': {
+                        'id': 'devise-form',
+                        'novalidate': true,
+                        'action': path('api_calcul_devise')
+                    }
+                }) }}
+                    {{ form_row(form.amount, {
+                        'row_attr': {
+                            'id': 'amount-row'
+                        }
+                    }) }}
+                    <div class="row">
+                        <label class="form-label">
+                            Devises à échanger
+                        </label>
+                        <div class="col-5">
+                            {{ form_row(form.fromCurr, {
+                                'row_attr': {
+                                    'class': 'input-group'
+                                }
+                            }) }}
+                        </div>
+                        <div class="col-2 d-flex justify-content-center align-items-center">
+                            <button id="swap-btn" type="button" class="btn btn-outline-primary">
+                                <i class="fa-solid fa-right-left"></i>
+                            </button>
+                        </div>
+                        <div class="col-5">
+                            {{ form_row(form.toCurr, {
+                                'row_attr': {
+                                    'class': 'input-group'
+                                }
+                            }) }}
+                        </div>
+                    </div>
+                    <div class="mb-4 mt-2">
+                        <p id="select-error-message" class="d-none text-danger text-center">
+                            Les devises d'origine et de destination ne peuvent pas être les mêmes. Veuillez choisir une autre devise
+                        </p>
+                    </div>
+                    <div class="row mb-3">
+                        {{ form_row(form.fee, {
+                            'row_attr': {
+                                'class': 'col-6',
+                                'id': 'fee-row'
+                            }
+                        }) }}
+                        {{ form_row(form.exchangedate, {
+                            'row_attr': {
+                                'class': 'col-6',
+                                'id': 'exchangedate-row'
+                            }
+                        }) }}
+                    </div>
+                    <div class="mt-3 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary">Calculer la conversion</button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+        <div id="results-row" class="d-none alert alert-primary mt-5 text-center"></div>
+	</div>
+{% endblock %}
