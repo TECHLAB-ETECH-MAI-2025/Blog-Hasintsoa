@@ -13,3 +13,14 @@
     background-color: $red-400;
   }
 }
+
+.scroll-top {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  display: none;
+
+  &.active {
+    display: block;
+  }
+}

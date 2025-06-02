@@ -11,9 +11,14 @@
 
 {% block body %}
 
-	<form action="{{ path('ping') }}" method="post">
-		<button type="submit" class="btn btn-primary">Test Mercure</button>
-	</form>
+	<header class="py-5 bg-light border-bottom mb-4">
+		<div class="container">
+			<div class="text-center my-5">
+				<h1 class="fw-bolder">Welcome to Symfony Blog Home !</h1>
+				<p class="lead mb-0">Un blog pour toutes les actualités</p>
+			</div>
+		</div>
+	</header>
 
 	<div class="container col-md-10 pt-3">
 		{% for article in articles %}
@@ -50,10 +55,11 @@
 
 {% block script %}
 	<script>
-		const eventSource = new EventSource("{{ mercure('http://localhost:8000/ping')|escape('js') }}");
-		eventSource.onmessage = event => {
-			// Will be called every time an update is published by the server
-			console.log(event.data);
-		}
-</script>
+		try {
+			const eventSource = new EventSource("{{ mercure('http://localhost:8000/ping')|escape('js') }}");
+			eventSource.onmessage = event => {
+				console.log(event.data);
+			}
+		} catch (error) {}
+	</script>
 {% endblock %}

@@ -11,48 +11,61 @@
 	{{ encore_entry_script_tags('article_rating') }}
 {% endblock %}
 
+{% set commentsLength = article.comments|length %}
+
 {% block body %}
-	<div class="container col-md-8 mt-5">
-		<div class="card">
-			<div class="card-header">
-				<div class="d-flex justify-content-between">
-					<h2>Articles</h2>
-					{{ include('article/_rating.html.twig') }}
-					{% if app.user %}
-						<button id="article-like-{{ article.id }}" type="button" class="like-button {% if isLiked %}liked{% endif %} btn btn-primary" data-article-id="{{ article.id }}">
-							<i class="fa-solid fa-xl fa-thumbs-up"></i>
+	<div class="container col-md-10 mt-4">
+		<article>
+			<header class="mb-4">
+				<h1 class="fw-bolder mb-1">{{ article.title }}</h1>
+				<div class="text-muted fst-italic my-2">
+					Posté le {{ article.createdAt|date('d M Y') }}
+					par
+					<span class="fw-bold">{{ article.author.fullName }}</span>
+				</div>
+				{% for category in article.categories %}
+					<a class="badge bg-secondary text-decoration-none link-light" href="#!">
+						{{ category.title }}
+					</a>
+				{% endfor %}
+				{% if app.user %}
+					<div class="d-flex gap-5 align-items-center mt-4">
+						<div class="border border-3 rounded-pill border-warning rounded px-3 py-2">
+							<div id="article-range-{{ article.id }}">
+								{% for i in 1..5 %}
+									<a type="button" data-article-id="{{ article.id }}" data-rating="{{ i }}" class="{% if i <= ratingIp %}fa-solid rated{% else %}fa-regular{% endif %} rating-star fa-star"></a>
+								{% endfor %}
+							</div>
+						</div>
+
+						<button id="article-like-{{ article.id }}" type="button" class="like-button btn{% if isLiked %} liked{% endif %}" data-article-id="{{ article.id }}">
+							<i class="{% if isLiked %}fa-solid{% else %}fa-regular{% endif %} fa-xl fa-thumbs-up like-icon"></i>
 							<span id="likes-count" class="bg-white p-1 rounded text-dark ms-3">
 								{{ article.likes|length }}
 							</span>
 						</button>
-					{% endif %}
-				</div>
-			</div>
-			<div class="card-body">
-				<h3>{{ article.title }}</h3>
-				<p>
+					</div>
+				{% endif %}
+			</header>
+			<section class="my-3">
+				<p class="fs-5 mb-4">
 					{{ article.content|nl2br }}
 				</p>
-				<p class="text-secondary fst-italic">
-					{% if article.categories|length > 0 %}
-						Catégories :
-						{{ article.categories|map(category => "#{category.title}")|join(', ') }}
-					{% endif %}
-				</p>
-				<p>
-					Publié le
-					<span class="fw-bold">
-						{{ article.createdAt|date('d M Y à H:i') }}
-					</span>
-				</p>
-				{{ include('comment/_comment_form.html.twig') }}
-				<div class="my-2">
-					<h4>
-						Commentaires &nbsp;
-						(<span class="fw-bold" id="comments-count">{{ article.comments|length }}</span>)
-					</h4>
-					<div id="comments-list">
-					{% if article.comments|length > 0 %}
+			</section>
+		</article>
+		<section class="mb-5 w-100">
+			<div class="card bg-light">
+				<div class="card-body">
+					{{ include('comment/_comment_form.html.twig') }}
+				</div>
+			</div>
+			<div class="d-flex mt-4 w-100">
+				<div class="ms-3 w-100">
+					<h3>
+						<i class="fa fa-comments"></i> {{ commentsLength }} commentaire{% if commentsLength > 1 %}s{% endif %}
+					</h3>
+					<div id="comments-list" class="w-100 d-flex flex-column-reverse">
+					{% if commentsLength > 0 %}
 						{% for comment in article.comments %}
 							{{ include('comment/_comment.html.twig') }}
 						{% endfor %}
@@ -62,20 +75,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 	</div>
 
-{% endblock %}
-
-{% block stylesheets %}
-	{{ parent() }}
-	<style>
-		.comment {
-			background-color: #f1f3f5;
-			padding: 10px;
-			border-left: 4px solid #0d6efd;
-			margin-bottom: 10px;
-			border-radius: 4px;
-		}
-	</style>
 {% endblock %}
