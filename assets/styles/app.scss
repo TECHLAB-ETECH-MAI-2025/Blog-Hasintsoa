@@ -1,16 +1,27 @@
 @import "./main.scss";
 
 .like-button {
+    border: 2px solid #6c575d;
+
+    &:hover {
+        border-color: #0d6efd;
+    }
+
     & i {
         transition: all 0.5s ease;
     }
 
     &:hover i {
+        color: #0d6efd;
         transform: scale(1.1);
     }
 
+    &.liked {
+        border-color: #0d6efd;
+    }
+
     &.liked i {
-        color: #e74c3c;
+        color: #0d6efd;
     }
 }
 

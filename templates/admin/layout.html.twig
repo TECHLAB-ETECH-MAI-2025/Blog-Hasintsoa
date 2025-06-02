@@ -15,8 +15,18 @@
 <body class="min-vh-100">
     {% include 'partials/_message.html.twig' %}
     <main id="sidebar-main" class="vh-100 d-flex flex-nowrap overflow-x-auto overflow-y-hidden">
-        {% include 'admin/partials/_sidebar.html.twig' %}
-        <div class="p-3 w-100 overflow-auto"> 
+        <div class="offcanvas-lg h-100" tabindex="-1" id="offcanvasSidebar">
+            <div class="offcanvas-body h-100">
+                {% include 'admin/partials/_sidebar.html.twig' %}
+            </div>
+        </div>
+        <div class="w-100 overflow-auto container">
+            <div class="d-lg-none position-fixed top-0 end-0 p-3" style="z-index: 999">
+                <button class="btn btn-primary mb-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                    <i class="fa-solid fa-bars"></i>
+                    Menu
+                </button>
+            </div>
             {% block body %}{% endblock %}
         </div>
     </main>

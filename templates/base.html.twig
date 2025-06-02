@@ -15,6 +15,13 @@
 <body>
     {% include 'partials/_navbar.html.twig' %}
     {% include 'partials/_message.html.twig' %}
+
+    <div class="scroll-top">
+        <button id="scroll-top-btn" class="btn btn-primary">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
+    </div>
+
     <div class="pt-3 mt-5"> 
         {% block body %}{% endblock %}
     </div>

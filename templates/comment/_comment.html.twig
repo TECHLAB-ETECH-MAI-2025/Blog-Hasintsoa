@@ -1,6 +1,13 @@
-<div class="comment">
-	<strong>
-		{{ comment.author.email }}
-	</strong>:
-	{{ comment.content }}
+<div class="mb-3 bg-body-secondary px-3 py-2 w-100 rounded">
+    <div class="d-flex justify-content-between align-items-center">
+        <span class="lh-sm fw-bold">
+            {{ comment.author.fullName }}
+        </span>
+        <span class="rounded-pill text-bg-light px-2 py-1">
+            commenté le {{ comment.createdAt|date('d M Y à H:m') }}
+        </span>
+    </div>
+    <p class="mt-1">
+        {{ comment.content|nl2br }}
+    </p>
 </div>

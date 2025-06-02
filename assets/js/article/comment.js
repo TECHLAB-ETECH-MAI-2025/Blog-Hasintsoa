@@ -20,7 +20,7 @@ jQuery(function ($) {
         if ($("#empty-text")) {
           $("#empty-text").hide();
         }
-        $commentsList.prepend(response.commentHtml);
+        $commentsList.append(response.commentHtml);
         $commentsCount.text(response.commentsCount);
         $commentForm[0].reset();
         showAlert("success", "Votre commentaire a été publié avec succès !");

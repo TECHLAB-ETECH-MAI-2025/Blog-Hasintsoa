@@ -5,12 +5,12 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container col-md-10">
-		<div class="card shadow mt-5">
-			<div class="card-body">
-				<h1>Ajouter une nouvelle Catégorie</h1>
-				{{ include('category/_form.html.twig') }}
-			</div>
+	<div class="pt-3 pb-2 mb-3 border-bottom">
+		<h1 class="h2">Ajouter une nouvelle Catégorie</h1>
+	</div>
+	<div class="container col-md-11">
+		<div class="shadow mt-5 p-5">
+			{{ include('category/_form.html.twig') }}
 		</div>
 	</div>
 {% endblock %}
