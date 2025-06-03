@@ -1,7 +1,7 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}
-	Liste de mes articles
+	Liste des articles
 {% endblock %}
 
 {% block javascripts %}
@@ -10,10 +10,10 @@
 {% endblock %}
 
 {% block body %}
+	<div class="pt-3 pb-2 mb-3 border-bottom">
+		<h1 class="h2">Liste des articles</h1>
+	</div>
 	<div class="container">
-		<div class="pt-3 pb-2 mb-3 border-bottom">
-			<h1 class="h2">Liste des articles</h1>
-		</div>
 		<div class="border rounded-md px-3">
 			<table class="table table-hover align-middle" id="articles-table">
 				<thead>

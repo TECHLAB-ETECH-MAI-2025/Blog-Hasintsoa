@@ -102,4 +102,10 @@ final class AdminController extends AbstractController
     {
         return $this->render('admin/user/new.html.twig', []);
     }
+
+    #[Route(path: "/article", name: 'app_admin_articles', methods: ['GET'])]
+    public function listArticles(): Response
+    {
+        return $this->render('admin/article/index.html.twig', []);
+    }
 }

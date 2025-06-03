@@ -16,9 +16,7 @@ jQuery(function ($) {
       { data: "id", searchable: false },
       { data: "title" },
       { data: "categories", searchable: false },
-      { data: "commentsCount", searchable: false },
       { data: "likesCount", searchable: false },
-      { data: "ratingsAvg", searchable: false },
       { data: "createdAt", searchable: false },
       { data: "actions", orderable: false, searchable: false }
     ],

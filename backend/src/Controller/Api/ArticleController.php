@@ -37,10 +37,8 @@ final class ArticleController extends AbstractController
             0 => 'a.id',
             1 => 'a.title',
             2 => 'categories',
-            3 => 'commentsCount',
-            4 => 'likesCount',
-            5 => 'ratingsAvg',
-            6 => 'a.createdAt',
+            3 => 'likesCount',
+            4 => 'a.createdAt',
         ];
         $orderColumn = $columns[$orders[0]['column'] ?? 0] ?? 'a.id';
         $orderDir = $orders[0]['dir'] ?? 'desc';
@@ -50,9 +48,11 @@ final class ArticleController extends AbstractController
                 $length,
                 $search,
                 $orderColumn,
-                $orderDir
+                $orderDir,
+                $this->isGranted('ROLE_ADMIN') ? null : $this->getUser()->getId()
             );
         $data = [];
+
         foreach ($results['data'] as $article) {
             $categoryNames = array_map(
                 fn($category): string => $category->getTitle(),
@@ -67,9 +67,7 @@ final class ArticleController extends AbstractController
                     htmlspecialchars($article[0]->getTitle())
                 ),
                 'categories' => implode(', ', $categoryNames),
-                'commentsCount' => $article["commentsCount"],
                 'likesCount' => $article["likesCount"],
-                'ratingsAvg' => $article["ratingsAvg"] !== null ? round($article["ratingsAvg"], 1) : 0,
                 'createdAt' => $article[0]->getCreatedAt()->format('d/m/Y H:i'),
                 'actions' => $this->renderView('article/_actions.html.twig', [
                     'article' => $article[0]
@@ -77,8 +75,6 @@ final class ArticleController extends AbstractController
             ];
         }
         return $this->json([
-            //"start" => $start,
-            //"length" => $length,
             "draw" => $draw,
             "recordsTotal" => $results["totalCount"],
             "recordsFiltered" => $results["totalCount"],

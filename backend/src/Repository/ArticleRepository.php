@@ -45,59 +45,65 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
     /**
-     * DataTable Listing
+     * DataTable Listing All Articles with rating Average and number of likes 
+     * Get All Articles for the user if it's exist
      * @param int $start
      * @param int $length
-     * @param mixed $search
-     * @param mixed $orderColumn
-     * @param mixed $orderDir
+     * @param string|null $search
+     * @param string $orderColumn
+     * @param string $orderDir
      * @return array{data: mixed, filteredCount: bool|float|int|string|null, totalCount: bool|float|int|string|null}
      */
-    public function findForDataTable($start, $length, $search, $orderColumn, $orderDir): array
-    {
-        $qb = $this->createQueryBuilder("a")
-            ->addSelect('COUNT(com.id) AS commentsCount')
+    public function findForDataTable(
+        int $start,
+        int $length,
+        ?string $search,
+        string $orderColumn,
+        string $orderDir,
+        ?int $authorId
+    ): array {
+        $qb = $this->createQueryBuilder('a')
             ->addSelect('COUNT(l.id) as likesCount')
-            ->addSelect('AVG(r.rating) as ratingsAvg')
             ->leftJoin("a.categories", "c")
-            ->leftJoin('a.comments', 'com')
             ->leftJoin('a.likes', 'l')
-            ->leftJoin('a.ratings', 'r')
-            ->groupBy("a.id", "c.title");
+            ->groupBy('a.id', 'c.title');
+
         if ($search) {
-            $qb->andWhere('a.title LIKE :search OR c.title LIKE :search')
+            $qb = $qb->andWhere('a.title LIKE :search OR c.title LIKE :search')
                 ->setParameter('search', '%' . $search . '%');
         }
-        $totalCount = $this->createQueryBuilder('a')
-            ->select('COUNT(a.id)')
-            ->distinct()
+
+        $totalCountQb = $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)');
+        if ($authorId) {
+            $qb = $qb->andWhere('a.author = :author')->setParameter('author', $authorId);
+            $totalCountQb = $totalCountQb->andWhere('a.author = :author')->setParameter('author', $authorId);
+        }
+        $totalCount = $totalCountQb->distinct()
             ->getQuery()
             ->getSingleScalarResult();
-        $filteredCountQb = clone $qb;
-        $filteredCount = $filteredCountQb
-            ->select('COUNT(DISTINCT a.id)')
-            ->distinct()
-            ->getQuery()
-            ->getScalarResult();
-        if ($orderColumn === 'commentsCount') {
-            $qb->orderBy('commentsCount', $orderDir);
-        } elseif ($orderColumn === 'likesCount') {
-            $qb->orderBy('likesCount', $orderDir);
-        } elseif ($orderColumn === 'categories') {
-            $qb->orderBy('c.title', $orderDir);
-        } elseif ($orderColumn === 'ratingsAvg') {
-            $qb->orderBy("ratingsAvg", $orderDir);
-        } else {
-            $qb->orderBy($orderColumn, $orderDir);
+
+        switch ($orderColumn) {
+            case 'likesCount':
+                $qb->orderBy('likesCount', $orderDir);
+                break;
+            case 'categories':
+                $qb->orderBy('c.title', $orderDir);
+                break;
+            default:
+                $qb->orderBy($orderColumn, $orderDir);
+                break;
         }
+
         $qb->setFirstResult($start)
             ->setMaxResults($length);
+
         return [
             'data' => $qb->getQuery()->getResult(),
-            'totalCount' => $totalCount,
-            'filteredCount' => $filteredCount
+            'totalCount' => $totalCount
         ];
     }
+
     /**
      * Paginate Articles for DataTable
      * This method is used to paginate articles for a DataTable with search and ordering capabilities.

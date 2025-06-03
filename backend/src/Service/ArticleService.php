@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\Article;
 use App\Repository\ArticleRepository;
+use Symfony\Component\HttpFoundation\Request;
 
 final class ArticleService extends AbstractService
 {
@@ -12,17 +12,15 @@ final class ArticleService extends AbstractService
     {
         $this->repository = $repository;
         $this->dataTableColumns = [
-            0 => 'id',
-            1 => 'title',
+            0 => 'a.id',
+            1 => 'a.title',
             2 => 'categories',
-            3 => 'commentsCount',
-            4 => 'likesCount',
-            5 => 'ratingsSum',
-            6 => 'a.createdAt',
+            3 => 'likesCount',
+            4 => 'a.createdAt',
         ];
     }
 
-    public function createArticle(Article $article): array
+    public function paginateDataTable(Request $request, $cb): array
     {
         return [];
     }

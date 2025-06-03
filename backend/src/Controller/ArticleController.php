@@ -8,17 +8,18 @@ use App\Form\ArticleForm;
 use App\Form\CommentForm;
 use App\Repository\ArticleLikeRepository;
 use App\Repository\ArticleRatingRepository;
+use App\Security\Voter\ArticleVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/article')]
 final class ArticleController extends AbstractController
 {
-
-    #[Route(path: "/", name: 'app_article_index', methods: ['GET'])]
+    #[Route(path: "", name: 'app_articles', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('article/index.html.twig', []);
@@ -49,7 +50,6 @@ final class ArticleController extends AbstractController
     #[Route('/{id}', name: 'app_article_show', methods: ['GET'])]
     public function show(
         Article $article,
-        Request $request,
         ArticleLikeRepository $likeRepository,
         ArticleRatingRepository $articleRatingRepository
     ): Response {
@@ -74,6 +74,7 @@ final class ArticleController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_article_edit', methods: ['GET', 'POST'])]
+    #[IsGranted(ArticleVoter::EDIT, subject: 'article')]
     public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ArticleForm::class, $article);
@@ -92,6 +93,7 @@ final class ArticleController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'app_article_delete', methods: ['POST'])]
+    #[IsGranted(ArticleVoter::DELETE, subject: 'article')]
     public function delete(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->getPayload()->getString('_token'))) {
