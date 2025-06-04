@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Message;
 
 use App\Entity\Message;
 use App\Repository\MessageRepository;
+use App\Service\AbstractService;
+use App\Service\Message\MessageServiceInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\Mailer\MailerInterface;
 
-final class MessageService extends AbstractService
+final class MessageService extends AbstractService implements MessageServiceInterface
 {
     public function __construct(
         private readonly MailerInterface $mailer,

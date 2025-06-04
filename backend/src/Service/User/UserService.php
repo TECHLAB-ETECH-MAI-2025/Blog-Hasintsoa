@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\User;
 
 use App\Repository\UserRepository;
+use App\Service\AbstractService;
 
-final class UserService extends AbstractService
+final class UserService extends AbstractService implements UserServiceInterface
 {
     public function __construct(UserRepository $repository)
     {

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Category;
 
 use App\Repository\CategoryRepository;
+use App\Service\AbstractService;
 
-final class CategoryService extends AbstractService
+final class CategoryService extends AbstractService implements CategoryServiceInterface
 {
     public function __construct(CategoryRepository $repository)
     {

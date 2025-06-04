@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Article;
 
 use App\Repository\ArticleRepository;
+use App\Service\AbstractService;
 use Symfony\Component\HttpFoundation\Request;
 
-final class ArticleService extends AbstractService
+final class ArticleService extends AbstractService implements ArticleServiceInterface
 {
 
     public function __construct(ArticleRepository $repository)

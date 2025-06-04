@@ -10,7 +10,7 @@ use App\Form\CommentForm;
 use App\Repository\ArticleLikeRepository;
 use App\Repository\ArticleRatingRepository;
 use App\Repository\ArticleRepository;
-use App\Service\ArticleService;
+use App\Service\Article\ArticleServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/articles')]
 final class ArticleController extends AbstractController
 {
-    public function __construct(private readonly ArticleService $articleService) {}
+    public function __construct(private readonly ArticleServiceInterface $articleService) {}
 
     #[Route(path: "", name: 'api_article_index', methods: ['POST'])]
     public function index(

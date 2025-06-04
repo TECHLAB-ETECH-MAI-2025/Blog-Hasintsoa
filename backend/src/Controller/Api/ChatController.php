@@ -6,7 +6,7 @@ use App\Entity\Message;
 use App\Entity\User;
 use App\Event\MessageNotificationEvent;
 use App\Form\MessageForm;
-use App\Service\MessageService;
+use App\Service\Message\MessageServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +20,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 final class ChatController extends AbstractController
 {
     public function __construct(
-        private readonly MessageService $messageService
+        private readonly MessageServiceInterface $messageService
     ) {}
 
     #[Route("/api/chat/send/{id}", name: 'api_chat_send')]

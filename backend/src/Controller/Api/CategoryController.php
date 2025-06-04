@@ -3,7 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Category;
-use App\Service\CategoryService;
+use App\Service\Category\CategoryServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/api/categories")]
 final class CategoryController extends AbstractController
 {
-    public function __construct(private readonly CategoryService $categoryService) {}
+    public function __construct(private readonly CategoryServiceInterface $categoryService) {}
 
     #[Route("", name: "api_categories", methods: ["POST"])]
     #[IsGranted("ROLE_ADMIN")]
