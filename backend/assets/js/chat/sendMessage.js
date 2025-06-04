@@ -19,7 +19,7 @@ jQuery(function ($) {
         if ($("#empty-text")) {
           $("#empty-text").hide();
         }
-        $messagesContainer.prepend(response.messageHtml)
+        $messagesContainer.append(response.messageHtml)
         $messageForm[0].reset();
         $(".invalid-feedback").remove();
         $(".form-control").removeClass("is-invalid");

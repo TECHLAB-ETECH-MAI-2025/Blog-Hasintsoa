@@ -20,8 +20,7 @@ final class ChatController extends AbstractController
     #[Route('', name: 'app_chat')]
     public function index(
         UserRepository $userRepository
-    )
-    {
+    ) {
         $currentUser = $this->getUser();
         return $this->render('chat/index.html.twig', [
             'users' => $userRepository->getAllUsersWithoutConnected($currentUser->getUserIdentifier())
@@ -65,7 +64,7 @@ final class ChatController extends AbstractController
         $form->handleRequest($request);
 
         return $this->render('chat/show.html.twig', [
-            'messages' => $messages,
+            'messages' => array_reverse($messages),
             'receiver' => $receiver,
             'users' => $userRepository->getAllUsersWithoutConnected($currentUser->getUserIdentifier()),
             'form' => $form,

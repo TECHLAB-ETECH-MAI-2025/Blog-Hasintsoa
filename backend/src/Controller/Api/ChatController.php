@@ -4,7 +4,9 @@ namespace App\Controller\Api;
 
 use App\Entity\Message;
 use App\Entity\User;
+use App\Event\MessageNotificationEvent;
 use App\Form\MessageForm;
+use App\Service\MessageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,15 +15,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class ChatController extends AbstractController
 {
+    public function __construct(
+        private readonly MessageService $messageService
+    ) {}
+
     #[Route("/api/chat/send/{id}", name: 'api_chat_send')]
     public function sendMessage(
         User $user,
         Request $request,
         EntityManagerInterface $entityManager,
-        HubInterface $hub
+        HubInterface $hub,
+        EventDispatcherInterface $eventDispatcher
     ): JsonResponse {
         $currentUser = $this->getUser();
         $message = new Message();
@@ -35,6 +43,7 @@ final class ChatController extends AbstractController
             $entityManager->persist($message);
             $entityManager->flush();
             try {
+                $eventDispatcher->dispatch(new MessageNotificationEvent($message));
                 $topic = sprintf(
                     '/chat/messages/%d/%d',
                     min($currentUser->getId(), $user->getId()),
@@ -45,7 +54,6 @@ final class ChatController extends AbstractController
                     'receiverId' => $message->getReceiver()->getId()
                 ]));
                 $hub->publish($update);
-
             } catch (\Exception $e) {
                 return $this->json([
                     "message" => $e->getMessage(),

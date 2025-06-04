@@ -1,0 +1,11 @@
+<p>
+	Vous avez reçu un nouveau message
+</p>
+
+<h3>Contenu</h3>
+<p>
+	{{ message.content }}
+</p>
+<a href="{{ path('app_chat_show', {receiverId: message.receiver.id}) }}">
+	Voir le message
+</a>
