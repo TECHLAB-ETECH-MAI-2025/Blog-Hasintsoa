@@ -5,7 +5,6 @@ namespace App\Controller\Api;
 use App\Entity\Message;
 use App\Entity\User;
 use App\Form\MessageForm;
-use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,7 +36,7 @@ final class ChatController extends AbstractController
             $entityManager->flush();
             try {
                 $topic = sprintf(
-                    'http://localhost:8000/chat/messages/%d/%d',
+                    '/chat/messages/%d/%d',
                     min($currentUser->getId(), $user->getId()),
                     max($currentUser->getId(), $user->getId())
                 );

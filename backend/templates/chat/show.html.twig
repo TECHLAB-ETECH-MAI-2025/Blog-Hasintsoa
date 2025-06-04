@@ -9,14 +9,13 @@
 	{{ encore_entry_script_tags('chat_send') }}
 {% endblock %}
 
-
 {% set userId1 = app.user.id %}
 {% set userId2 = receiver.id %}
-{% set conversationChatPath = 'http://localhost:8000/chat/messages/' ~ (userId1 < userId2 ? userId1 ~ '/' ~ userId2 : userId2 ~ '/' ~ userId1) %}
+{% set conversationChatPath = '/chat/messages/' ~ (userId1 < userId2 ? userId1 ~ '/' ~ userId2 : userId2 ~ '/' ~ userId1) %}
 
 {% block body %}
 	<section class="pt-3 position-absolute top-0 bottom-0 end-0 start-0 mt-5 py-5">
-		<div class="container border border-primary border-3 h-100">
+		<div class="container border-primary border-3 h-100">
 			<div class="row">
 
 				{{ include('chat/_user_list.html.twig', {'users': users, 'receiverId': receiver.id}) }}
