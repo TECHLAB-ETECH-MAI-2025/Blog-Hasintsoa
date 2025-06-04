@@ -4,7 +4,6 @@ import { Toast } from "bootstrap";
 jQuery(function ($) {
   const $messageForm = $("#message-form");
   const $messagesContainer = $("#messages-container");
-  const dataChatPath = $messageForm.data("chat-user");
   $messageForm.on("submit", (event) => {
     event.preventDefault();
     event.stopPropagation();

@@ -16,7 +16,7 @@ final class CategoryController extends AbstractController
 {
     public function __construct(private readonly CategoryServiceInterface $categoryService) {}
 
-    #[Route("", name: "api_categories", methods: ["POST"])]
+    #[Route("/data-table", name: "api_categories_data", methods: ["POST"])]
     #[IsGranted("ROLE_ADMIN")]
     public function index(Request $request): JsonResponse
     {

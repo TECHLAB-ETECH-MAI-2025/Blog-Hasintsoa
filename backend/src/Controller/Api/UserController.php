@@ -17,7 +17,7 @@ final class UserController extends AbstractController
 {
     public function __construct(private readonly UserServiceInterface $userService) {}
 
-    #[Route("", name: "api_users", methods: ['POST'])]
+    #[Route("/data-table", name: "api_users_data", methods: ['POST'])]
 
     public function index(Request $request): JsonResponse
     {

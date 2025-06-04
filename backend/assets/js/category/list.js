@@ -9,7 +9,7 @@ jQuery(function ($) {
     serverSide: true,
     responsive: true,
     ajax: {
-      url: "/api/categories",
+      url: "/api/categories/data-table",
       type: "POST"
     },
     columns: [

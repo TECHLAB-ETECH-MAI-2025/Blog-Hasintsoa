@@ -23,8 +23,8 @@ final class ArticleController extends AbstractController
 {
     public function __construct(private readonly ArticleServiceInterface $articleService) {}
 
-    #[Route(path: "", name: 'api_article_index', methods: ['POST'])]
-    public function index(
+    #[Route(path: "/data-table", name: 'api_article_data', methods: ['POST'])]
+    public function listForDataTable(
         ArticleRepository $articleRepository,
         Request $request
     ): JsonResponse {
