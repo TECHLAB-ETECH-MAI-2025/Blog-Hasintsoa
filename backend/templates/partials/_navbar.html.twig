@@ -22,13 +22,16 @@
 					</a>
 					<ul class="dropdown-menu">
 						<li>
-							<a class="dropdown-item" href="{{ path('app_article_new') }}">Nouvelle article</a>
+							<a class="dropdown-item" href="{{ path('app_list_articles') }}">Les actualités</a>
 						</li>
 						{% if app.user %}
-						<li><hr class="dropdown-divider"></li>
-						<li>
-							<a class="dropdown-item" href="{{ path('app_articles') }}">Mes articles</a>
-						</li>
+							<li>
+								<a class="dropdown-item" href="{{ path('app_article_new') }}">Nouvelle article</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li>
+								<a class="dropdown-item" href="{{ path('app_articles') }}">Mes articles</a>
+							</li>
 						{% endif %}
 					</ul>
 				</li>

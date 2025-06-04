@@ -45,6 +45,20 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get Latest Article
+     * @param int $limit
+     * @return Article[]
+     */
+    public function getLatestArticle(int $limit): array
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * DataTable Listing All Articles with rating Average and number of likes 
      * Get All Articles for the user if it's exist
      * @param int $start

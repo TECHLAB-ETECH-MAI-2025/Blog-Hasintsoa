@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 final class ArticleVoter extends Voter
 {
     public const EDIT = 'ARTICLE_EDIT';
+    public const CREATE = 'ARTICLE_CREATE';
     public const VIEW = 'ARTICLE_VIEW';
     public const DELETE = 'ARTICLE_DELETE';
     public const LIST_ALL = 'ARTICLE_ALL';
@@ -19,7 +20,7 @@ final class ArticleVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::LIST_ALL]) ||
+        return in_array($attribute, [self::LIST_ALL, self::CREATE]) ||
             (in_array($attribute, [self::EDIT, self::VIEW]) && $subject instanceof Article);
     }
 
@@ -40,6 +41,7 @@ final class ArticleVoter extends Voter
                 return $this->security->isGranted('ROLE_ADMIN');
 
             case self::VIEW:
+            case self::CREATE:
                 return true;
         }
 

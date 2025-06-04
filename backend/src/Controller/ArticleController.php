@@ -8,6 +8,7 @@ use App\Form\ArticleForm;
 use App\Form\CommentForm;
 use App\Repository\ArticleLikeRepository;
 use App\Repository\ArticleRatingRepository;
+use App\Repository\ArticleRepository;
 use App\Security\Voter\ArticleVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +26,18 @@ final class ArticleController extends AbstractController
         return $this->render('article/index.html.twig', []);
     }
 
+    #[Route(path: "/actu", name: 'app_list_articles', methods: ['GET'])]
+    public function listArticles(ArticleRepository $articleRepository, Request $request): Response
+    {
+        $page = $request->query->getInt("page", 1);
+        $articles = $articleRepository->paginateArticles($page, 10);
+        return $this->render('article/list.html.twig', [
+            'articles' => $articles
+        ]);
+    }
+
     #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $article = new Article();

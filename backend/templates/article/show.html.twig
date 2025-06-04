@@ -45,6 +45,15 @@
 							</span>
 						</button>
 					</div>
+				{% else %}
+					<div class="d-flex align-items-center mt-2">
+						<div class="border rounded border-secondary py-1 px-3">
+							<i class="fa-regular fa-xl fa-thumbs-up"></i>
+							<span class="bg-white p-1 rounded text-dark ms-3">
+								{{ article.likes|length }}
+							</span>
+						</div>
+					</div>
 				{% endif %}
 			</header>
 			<section class="my-3">
