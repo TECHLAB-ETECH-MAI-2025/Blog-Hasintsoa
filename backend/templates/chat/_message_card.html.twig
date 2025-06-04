@@ -1,6 +1,6 @@
 <div class="row mt-2">
     <div class="col-md-10 {% if message.receiver.id == receiver.id %}offset-md-2 text-end{% endif %}">
-        <span class="bg-primary px-2 py-1 rounded text-white">
+        <span class="{% if message.receiver.id == receiver.id %}bg-primary{% else %}bg-secondary{% endif %} px-2 py-1 rounded text-white">
             {{ message.content|trim|nl2br }}
         </span>
     </div>

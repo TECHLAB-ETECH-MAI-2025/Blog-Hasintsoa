@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Message;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,18 +18,21 @@ class MessageRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Message[] Returns an array of Message objects
+     * @return Paginator Pagination of all messages
      */
-    public function findConversation(int $userId1, int $userId2): array
+    public function findConversation(int $userId1, int $userId2, int $page,int $length = 5): Paginator
     {
-        return $this->createQueryBuilder('m')
+
+        $qb = $this->createQueryBuilder('m')
             ->where('(m.sender = :user1 AND m.receiver = :user2) OR (m.sender = :user2 AND m.receiver = :user1)')
             ->setParameter('user1', $userId1)
             ->setParameter('user2', $userId2)
-            ->orderBy('m.createdAt', 'ASC')
-            ->getQuery()
-            ->getResult()
+            ->orderBy('m.createdAt', 'DESC')
         ;
+        return new Paginator(
+            $qb->setFirstResult(($page - 1) * $length )
+                ->setMaxResults($length)
+        );
     }
 
     //    public function findOneBySomeField($value): ?Message

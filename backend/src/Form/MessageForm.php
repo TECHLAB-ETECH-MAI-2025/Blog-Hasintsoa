@@ -18,7 +18,7 @@ class MessageForm extends AbstractType
             ->add('content', TextareaType::class, [
                 'label' => 'Votre message',
                 'attr' => [
-                    'rows' => 4
+                    'rows' => 1
                 ],
                 'constraints' => [
                     new NotBlank([

@@ -15,9 +15,8 @@
 
 {% block body %}
 	<section class="pt-3 position-absolute top-0 bottom-0 end-0 start-0 mt-5 py-5">
-		<div class="container border-primary border-3 h-100">
+		<div class="container border-primary border-3 h-100 pt-3">
 			<div class="row">
-
 				{{ include('chat/_user_list.html.twig', {'users': users, 'receiverId': receiver.id}) }}
 
 				<div class="col-lg-8">
@@ -28,35 +27,55 @@
 						</button>
 					</div>
 
-					<div class="vstack gap-4">
-						<div class="card border">
+					<div class="vstack gap-4 h-100">
+						<div class="card border h-100">
 							<div class="card-header">
 								{{ receiver.fullName }}
 							</div>
-							<div class="card-body" id="messages-container">
-								{% for message in messages %}
-									{% include "chat/_message_card.html.twig" %}
-								{% else %}
-									<div class="fs-1 text-center" id="empty-text">
-										Veuillez commencer à écrire
-									</div>
-								{% endfor %}
+							<div class="card-body" style="max-height: 500px;overflow: auto;">
+
+								{% if page < maxPage %}
+								<div class="text-center">
+									<a href="{{ path('app_chat_show', {receiverId: receiver.id, p: page + 1}) }}" class="btn btn-success">
+										Voir les messages précédents
+									</a>
+								</div>
+								{% endif %}
+								<div class="d-flex flex-column-reverse" id="messages-container">
+									{% for message in messages %}
+										{% include "chat/_message_card.html.twig" %}
+									{% else %}
+										<div class="fs-1 text-center" id="empty-text">
+											Veuillez commencer à écrire
+										</div>
+									{% endfor %}
+								</div>
+
+								{% if page > 1 %}
+								<div class="text-center">
+									<a href="{{ path('app_chat_show', {receiverId: receiver.id, p: page -1}) }}" class="btn btn-success">
+										Voir les messages suivantes
+									</a>
+								</div>
+								{% endif %}
+
 							</div>
 							<div class="card-footer">
-
 								{{ form_start(form, {
 									'attr': {
 										'novalidate': true,
 										'id': 'message-form',
+										'class': 'd-flex justify-content-between align-items-center',
 										'action': path('api_chat_send', { id: receiver.id }),
 										'data-chat-user': conversationChatPath
 									}
 								}) }}
-								<div class="mb-3" id="content-row">
-									{{ form_label(form.content) }}
+								<div class="w-100" id="content-row">
 									{{ form_widget(form.content) }}
 								</div>
-								<button type="submit" class="btn btn-primary">Envoyer</button>
+								<button type="submit" class="btn btn-primary">
+									<i class="fa fa-paper-plane"></i>
+								</button>
 								{{ form_end(form) }}
 							</div>
 						</div>
@@ -79,14 +98,14 @@
 				messageCard.innerHTML = `
 					<div class="row mt-2">
 						<div class="col-md-10">
-							<span class="bg-primary px-2 py-1 rounded text-white">
+							<span class="bg-secondary px-2 py-1 rounded text-white">
 								${message}
 							</span>
 						</div>
 					</div>
 				`;
-				document.querySelector("#messages-container").append(messageCard)
+				document.querySelector("#messages-container").prepend(messageCard)
 			}
-			}
+		}
 	</script>
 {% endblock %}

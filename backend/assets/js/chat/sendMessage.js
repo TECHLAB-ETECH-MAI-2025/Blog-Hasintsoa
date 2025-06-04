@@ -9,8 +9,7 @@ jQuery(function ($) {
     event.preventDefault();
     event.stopPropagation();
     const $submitBtn = $messageForm.find('button[type="submit"]');
-    const originalBtnText = $submitBtn.html();
-    $submitBtn.html("Envoi en cours...").prop("disabled", true);
+    $submitBtn.prop("disabled", true);
     $.ajax({
       method: "POST",
       url: $messageForm.attr("action"),
@@ -20,7 +19,7 @@ jQuery(function ($) {
         if ($("#empty-text")) {
           $("#empty-text").hide();
         }
-        $messagesContainer.append(response.messageHtml)
+        $messagesContainer.prepend(response.messageHtml)
         $messageForm[0].reset();
         $(".invalid-feedback").remove();
         $(".form-control").removeClass("is-invalid");
@@ -40,7 +39,7 @@ jQuery(function ($) {
         }
       },
       complete: () => {
-        $submitBtn.html(originalBtnText).prop("disabled", false);
+        $submitBtn.prop("disabled", false);
       }
     });
   });

@@ -5,12 +5,12 @@
 {% endblock %}
 
 {% block body %}
-	<section class="pt-3">
+	<section class="">
 		<div class="container">
 			<div class="row">
 
 				{{ include('chat/_user_list.html.twig', {'users': users, 'receiverId': ''}) }}
-				
+
 				<div class="col-lg-8">
 					<div class="d-grid mb-0 d-lg-none w-100">
 						<button class="btn btn-primary mb-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
@@ -19,14 +19,9 @@
 						</button>
 					</div>
 
-					<div class="vstack gap-4">
-						<div class="card border">
-							<div class="card-body">
-								<div class="d-flex justify-content-center align-items-center">
-									<h3>Chat Template</h3>
-								</div>
-							</div>
-						</div>
+					<div class="vstack h-100 gap-3 d-flex flex-column justify-content-center align-items-center">
+						<h1>Chat</h1>
+						<i class="fa-solid fs-1 fa-comments"></i>
 					</div>
 				</div>
 

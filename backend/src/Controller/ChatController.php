@@ -36,6 +36,7 @@ final class ChatController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request
     ): Response {
+        $page = $request->query->getInt('p', 1);
         $currentUser = $this->getUser();
         $currentUserId = $currentUser->getId();
 
@@ -53,27 +54,24 @@ final class ChatController extends AbstractController
             throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
 
-        $messages = $messageRepository->findConversation($currentUserId, $receiverId);
+        (int) $messageSize = 10;
+        $conversations = $messageRepository->findConversation($currentUserId, $receiverId, $page, $messageSize);
+        $messages = $conversations->getQuery()->getResult();
+        $messagesCount = $conversations->count();
+        $maxPage = ceil($messagesCount / $messageSize);
 
         $message = new Message();
         $form = $this->createForm(MessageForm::class, $message);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $message->setSender($currentUser);
-            $message->setReceiver($receiver);
-            $message->setCreatedAt(new \DateTimeImmutable());
-            $entityManager->persist($message);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_chat_show', ['receiverId' => $receiverId]);
-        }
-
         return $this->render('chat/show.html.twig', [
             'messages' => $messages,
             'receiver' => $receiver,
             'users' => $userRepository->getAllUsersWithoutConnected($currentUser->getUserIdentifier()),
-            'form' => $form
+            'form' => $form,
+            'page' => $page,
+            'maxPage' => $maxPage,
+            'messagesCount' => $messagesCount
         ]);
     }
 }
