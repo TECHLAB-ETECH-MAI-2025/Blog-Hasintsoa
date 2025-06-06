@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 function LinkList() {
   return (
     <>
@@ -9,7 +11,7 @@ function LinkList() {
           <summary>Blog</summary>
           <ul className="p-2">
             <li>
-              <a>Nouvelle articles</a>
+              <Link to={"/articles/new"}>Nouvelle articles</Link>
             </li>
             <li>
               <a>Submenu 2</a>
