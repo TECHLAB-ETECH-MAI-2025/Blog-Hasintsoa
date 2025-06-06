@@ -2,7 +2,6 @@
 
 namespace App\EventSubscriber;
 
-use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -12,9 +11,6 @@ class JwtSubscriber implements EventSubscriberInterface
     {
         $data = $event->getData();
         $data['email'] = $event->getUser()->getUserIdentifier();
-        $data['exp'] = (new \DateTime('+1 day'))
-            ->setTime(12, 0, 0)
-            ->getTimestamp();
         $event->setData($data);
     }
 
