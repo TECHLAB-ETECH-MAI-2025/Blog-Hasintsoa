@@ -3,6 +3,17 @@ lexik_jwt_authentication:
     public_key: "%env(resolve:JWT_PUBLIC_KEY)%"
     pass_phrase: "%env(JWT_PASSPHRASE)%"
     user_id_claim: id
+    token_extractors:
+        authorization_header:
+            enabled: true
+            prefix: Bearer
+            name: Authorization
+        cookie:
+            enabled: true
+            name: symfony_cookie
+    set_cookies:
+        symfony_cookie: ~
+    remove_token_from_body_when_cookies_used: true
     api_platform:
         check_path: /api/login
         username_path: email
