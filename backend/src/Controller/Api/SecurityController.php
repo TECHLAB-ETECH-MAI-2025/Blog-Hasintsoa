@@ -9,11 +9,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api')]
 final class SecurityController extends AbstractController
 {
-    #[Route('/login', name: 'api_login', methods: ['POST'])]
-    public function apiLogin(): JsonResponse
+    #[Route('/me', name: 'api_user_me', methods: ['POST'])]
+    public function getConnectedUser(): JsonResponse
     {
-        return $this->json([
-            'alors' => 'quoi'
-        ]);
+        return $this->json(
+            $this->getUser()
+        );
     }
 }
