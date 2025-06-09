@@ -10,7 +10,8 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { ThemeContextProvider } from "@/hooks/useTheme";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 export const links: Route.LinksFunction = () => [];
 
@@ -24,18 +25,36 @@ export function Layout({ children }: { children: ReactNode }) {
         <Links />
       </head>
       <body className="min-h-screen">
-        <ThemeContextProvider>
-          {children}
-          <ScrollRestoration />
-          <Scripts />
-        </ThemeContextProvider>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
       </body>
     </html>
   );
 }
 
 export default function App() {
-  return <Outlet />;
+  const { account, authenticate } = useAuth();
+
+  useEffect(() => {
+    authenticate();
+  }, []);
+
+  if (account === undefined) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <span className="loading loading-ring w-2xs"></span>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <ThemeContextProvider>
+        <Outlet />
+      </ThemeContextProvider>
+    </>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

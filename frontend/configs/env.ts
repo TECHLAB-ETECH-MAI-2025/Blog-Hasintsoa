@@ -1,1 +1,1 @@
-export const BACKEND_URL: string = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8080";
+export const BACKEND_URL: string = import.meta.env.VITE_BACKEND_URL || "https://127.0.0.1:8000";

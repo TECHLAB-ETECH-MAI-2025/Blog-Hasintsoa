@@ -1,10 +1,27 @@
+import { useAuth } from "@/hooks/useAuth";
 import { FaEnvelope, FaPaperPlane } from "react-icons/fa6";
 import { Link } from "react-router";
 import AuthLayout from "~/layouts/auth/auth-layout";
 
 function ForgotPassword() {
+  const { logout } = useAuth();
+
+  const handleRequest = async () => {
+    const r = await fetch("https://127.0.0.1:8000/api/test", {
+      method: "GET",
+      headers: {
+        Accept: "application/json"
+      }
+    });
+    if (r.ok) [console.log(await r.json())];
+    console.log("######################");
+  };
+
   return (
     <AuthLayout>
+      <button type="button" className="btn btn-primary" onClick={handleRequest}>
+        Test Me
+      </button>
       <h1 className="text-center text-2xl my-3">Mot de passe oublié</h1>
       <p className="text-center text-gray-500">
         Entrez votre adresse email et nous vous enverrons un lien pour

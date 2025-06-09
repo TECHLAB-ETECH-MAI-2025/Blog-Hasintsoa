@@ -1,8 +1,11 @@
 import { ThemeSwitcher } from "@/components";
-import { LinkList } from "@/components/navbar";
+import { LinkList, UserDropdown } from "@/components/navbar";
+import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router";
 
 function AppHeaderLayout() {
+  const { account } = useAuth();
+
   return (
     <div className="navbar bg-base-100 shadow-sm px-10 sticky top-0">
       <div className="navbar-start">
@@ -41,34 +44,19 @@ function AppHeaderLayout() {
       </div>
       <div className="navbar-end">
         <ThemeSwitcher />
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
-          >
-            <div className="w-10 rounded-full">
-              <img alt="Profile Image" src="/assets/images/profile_image.jpg" />
-            </div>
+
+        {account ? (
+          <UserDropdown />
+        ) : (
+          <div className="flex gap-3">
+            <Link to={"/sign-in"} className="btn btn-primary">
+              Se connecter
+            </Link>
+            <Link to={"/register"} className="btn btn-primary">
+              S'inscrire
+            </Link>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-          >
-            <li>
-              <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <a className="hover:bg-red-600/30">Logout</a>
-            </li>
-          </ul>
-        </div>
+        )}
       </div>
     </div>
   );

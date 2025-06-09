@@ -1,58 +1,65 @@
-import { FaArrowRight, FaEnvelope, FaLock } from "react-icons/fa6";
+import { FaArrowRight } from "react-icons/fa6";
 import { Link } from "react-router";
 import AuthLayout from "~/layouts/auth/auth-layout";
+import { useForm } from "react-hook-form";
+import { SignInForm as FormFields } from "@/forms/AuthForms";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { wait } from "@/libs/util";
+import type { AuthRequest } from "@/types";
+import { useAuth } from "@/hooks/useAuth";
+import { InputForm, SubmitBtn } from "@/components/inputForm";
 
 function SignIn() {
+  const { login } = useAuth();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm({
+    resolver: yupResolver(FormFields.schema)
+  });
+
+  const onSubmit = async (data: AuthRequest) => {
+    await wait();
+    await login(data);
+  };
+
   return (
     <AuthLayout>
       <h1 className="text-center text-2xl my-3">Connexion</h1>
-      <form className="space-y-6">
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text text-gray-700">Email Address</span>
-          </label>
-          <div className="relative">
-            <input
-              type="email"
-              placeholder="you@example.com"
-              className="input input-bordered w-full pl-10"
-              required
-            />
-            <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <InputForm
+          register={register}
+          options={FormFields.username}
+          className="w-full"
+          errors={errors}
+          value={"admin@domain.com"}
+          disabled={false}
+        />
+
+        <InputForm
+          register={register}
+          options={FormFields.password}
+          className="w-full"
+          errors={errors}
+          value={"Admin@123"}
+          disabled={false}
+        />
+
+        <div className="flex justify-end items-center mt-2">
+          <Link to={"/forgot-password"} className="link link-primary text-sm">
+            Forgot password?
+          </Link>
         </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text text-gray-700">Password</span>
-          </label>
-          <div className="relative">
-            <input
-              type="password"
-              placeholder="••••••••"
-              className="input input-bordered w-full pl-10 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              required
-            />
-            <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          </div>
-          <div className="flex justify-between items-center mt-2">
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-sm checkbox-primary"
-              />
-              <span className="label-text ml-2 text-gray-600">Remember me</span>
-            </label>
-            <Link to={"/forgot-password"} className="link link-primary text-sm">
-              Forgot password?
-            </Link>
-          </div>
-        </div>
-        <button
-          type="submit"
-          className="btn btn-primary w-full bg-gradient-to-r from-indigo-500 to-pink-500 border-0 hover:from-indigo-600 hover:to-pink-600"
+
+        <SubmitBtn
+          className="btn text-white w-full bg-gradient-to-r from-indigo-500 to-pink-500 border-0 hover:from-indigo-600 hover:to-pink-600"
+          isSubmitting={isSubmitting}
+          disabled={isSubmitting}
         >
           Se connecter <FaArrowRight className="ml-2" />
-        </button>
+        </SubmitBtn>
       </form>
       <p className="text-center text-gray-600 mt-6">
         Vous n'avez pas de compte ?
