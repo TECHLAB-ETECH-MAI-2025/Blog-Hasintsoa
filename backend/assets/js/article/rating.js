@@ -8,7 +8,7 @@ jQuery(function ($) {
     const rating = $(this).data("rating");
     console.log(articleId, rating);
     $.ajax({
-      url: `/api/articles/${$(this).data("article-id")}/rate`,
+      url: `/api/articles/${$(this).data("article-id")}/rates`,
       method: "POST",
       data: { rating },
       dataType: "json",

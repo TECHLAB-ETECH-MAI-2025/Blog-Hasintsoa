@@ -2,12 +2,15 @@
 
 namespace App\Controller\Api;
 
+use App\Dto\RequestCategoryDto;
 use App\Entity\Category;
+use App\Repository\CategoryRepository;
 use App\Service\Category\CategoryServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -39,5 +42,25 @@ final class CategoryController extends AbstractController
             ],
             Response::HTTP_OK
         );
+    }
+
+    #[Route('', name: 'api_categories', methods: ['GET'])]
+    public function getAllCategories(CategoryRepository $categoryRepository): JsonResponse
+    {
+        return $this->json([
+            'success' => true,
+            'data' => $categoryRepository->findAll()
+        ]);
+    }
+
+    #[Route('', name: 'api_categories_add', methods: ['POST'])]
+    public function createCategory(#[MapRequestPayload] RequestCategoryDto $categoryDto): JsonResponse
+    {
+        $category = $this->categoryService->addCategory($categoryDto);
+        return $this->json([
+            'success' => true,
+            'data' => $this->categoryService->convertToDto($category),
+            'message' => 'Category added successfully'
+        ], Response::HTTP_CREATED);
     }
 }

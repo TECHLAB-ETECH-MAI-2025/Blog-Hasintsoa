@@ -2,6 +2,8 @@
 
 namespace App\Service\User;
 
+use App\Dto\AuthorDto;
+use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\AbstractService;
 
@@ -17,5 +19,23 @@ final class UserService extends AbstractService implements UserServiceInterface
             4 => 'isVerified',
             5 => 'createdAt',
         ];
+    }
+
+    public function getById(int $id): User
+    {
+        return $this->repository->findOneBy([
+            'id' => $id
+        ]);
+    }
+
+    public function convertUserToAuthorDto(User $user): AuthorDto
+    {
+        $authorDto = new AuthorDto();
+        $authorDto->id = $user->getId();
+        $authorDto->email = $user->getEmail();
+        $authorDto->firstName = $user->getFirstName();
+        $authorDto->lastName = $user->getLastName();
+        $authorDto->createdAt = $user->getCreatedAt();
+        return $authorDto;
     }
 }

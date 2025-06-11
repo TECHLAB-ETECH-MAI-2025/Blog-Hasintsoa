@@ -2,10 +2,13 @@
 
 namespace App\Controller\Api;
 
+use App\Dto\CommentArticleDto;
+use App\Dto\RequestArticleDto;
 use App\Entity\Article;
 use App\Entity\ArticleLike;
 use App\Entity\ArticleRating;
 use App\Entity\Comment;
+use App\Entity\User;
 use App\Form\CommentForm;
 use App\Repository\ArticleLikeRepository;
 use App\Repository\ArticleRatingRepository;
@@ -16,7 +19,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/articles')]
 final class ArticleController extends AbstractController
@@ -42,15 +47,18 @@ final class ArticleController extends AbstractController
         ];
         $orderColumn = $columns[$orders[0]['column'] ?? 0] ?? 'a.id';
         $orderDir = $orders[0]['dir'] ?? 'desc';
-        $results = $articleRepository
-            ->findForDataTable(
-                $start,
-                $length,
-                $search,
-                $orderColumn,
-                $orderDir,
-                $this->isGranted('ROLE_ADMIN') ? null : $this->getUser()->getId()
-            );
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $results = $articleRepository
+                ->findForDataTable(
+                    $start,
+                    $length,
+                    $search,
+                    $orderColumn,
+                    $orderDir,
+                    $this->isGranted('ROLE_ADMIN') ? null : $user->getId()
+                );
+        }
         $data = [];
 
         foreach ($results['data'] as $article) {
@@ -82,7 +90,8 @@ final class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/comment', name: 'api_article_comment', methods: ['POST'])]
+    #[Route('/{id}/comments', name: 'api_article_comment', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function addComment(
         Article $article,
         Request $request,
@@ -116,7 +125,8 @@ final class ArticleController extends AbstractController
         ], Response::HTTP_BAD_REQUEST);
     }
 
-    #[Route('/{id}/like', name: 'api_article_like', methods: ['POST'])]
+    #[Route('/{id}/likes', name: 'api_article_like', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function likeArticle(
         Article $article,
         Request $request,
@@ -149,7 +159,8 @@ final class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/rate', name: 'api_article_rate', methods: ['POST'])]
+    #[Route('/{id}/rates', name: 'api_article_rate', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function rateArticle(
         Article $article,
         Request $request,
@@ -178,6 +189,63 @@ final class ArticleController extends AbstractController
             "success" => true,
             "articleId" => $article->getId(),
             "rates" => $rateLength
+        ]);
+    }
+
+    #[Route('', name: 'api_article_list', methods: ['GET'])]
+    public function getAllArticles(ArticleRepository $articleRepository): JsonResponse
+    {
+        return $this->json([
+            'data' => $articleRepository->findBy([], [
+                'createdAt' => 'DESC'
+            ])
+        ], Response::HTTP_OK, [
+            'Content-Type' => 'application/json'
+        ], [
+            'groups' => 'articles.index'
+        ]);
+    }
+
+    #[Route('/{id}', name: 'api_article_show', methods: ['GET'])]
+    public function getArticleById(string $id, ArticleRepository $articleRepository): JsonResponse
+    {
+        return $this->json([
+            'success' => true,
+            'data' => $articleRepository->findOneBy([
+                'id' => $id
+            ]),
+            'message' => 'article by Id'
+        ], Response::HTTP_OK, [
+            'Content-Type' => 'application/json'
+        ], [
+            'groups' => 'articles.index'
+        ]);
+    }
+
+    #[Route('', name: 'api_article_add', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function createArticle(
+        #[MapRequestPayload]
+        RequestArticleDto $articleDto
+    ): JsonResponse {
+        $article = $this->articleService->addArticle($articleDto);
+        return $this->json([
+            'success' => true,
+            'data' => $this->articleService->convertToDto($article),
+            'message' => 'Article added successfully'
+        ], Response::HTTP_CREATED);
+    }
+
+    #[Route('/{id}/comment', name: 'api_article_comments', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function commentByIdArticle(
+        Article $article,
+        #[MapRequestPayload]
+        CommentArticleDto $commentArticleDto
+    ): JsonResponse {
+        return $this->json([
+            'article' => $this->articleService->convertToDto($article),
+            'comment' => $commentArticleDto
         ]);
     }
 }

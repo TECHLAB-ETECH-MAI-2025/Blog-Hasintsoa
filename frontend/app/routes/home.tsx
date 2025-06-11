@@ -8,6 +8,7 @@ import {
   FaPaintbrush,
   FaUtensils
 } from "react-icons/fa6";
+import { Link } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -27,7 +28,9 @@ export default function Home() {
               Discover amazing articles, tutorials, and insights about
               technology, design, and more.
             </p>
-            <button className="btn btn-primary">Start Reading</button>
+            <Link to={"/articles"} className="btn btn-primary">
+              Start Reading
+            </Link>
           </div>
         </div>
       </section>
@@ -77,7 +80,9 @@ export default function Home() {
           </div>
         </section>
         <div className="flex justify-center">
-          <button className="btn btn-outline">View All Posts</button>
+          <Link to={"/articles"} className="btn btn-outline">
+            View All Posts
+          </Link>
         </div>
       </div>
     </>

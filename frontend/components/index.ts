@@ -9,3 +9,7 @@ export {
 export {
   default as CommentCard
 } from "./CommentCard"
+
+export {
+  default as Spinner
+} from "./Spinner"

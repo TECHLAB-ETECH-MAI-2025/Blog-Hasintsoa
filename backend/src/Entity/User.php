@@ -10,6 +10,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -20,9 +21,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['articles.index'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Groups(['articles.index'])]
     private ?string $email = null;
 
     /**
@@ -38,12 +41,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     private ?string $password = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['articles.index'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['articles.index'])]
     private ?string $lastName = null;
 
     #[ORM\Column]
+    #[Groups(['articles.index'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]

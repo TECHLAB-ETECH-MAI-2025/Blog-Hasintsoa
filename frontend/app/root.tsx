@@ -9,9 +9,11 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { ThemeContextProvider } from "@/hooks/useTheme";
+import { ThemeContextProvider, useTheme } from "@/hooks/useTheme";
 import { useEffect, type ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { Toaster } from "react-hot-toast";
+import { Spinner } from "@/components";
 
 export const links: Route.LinksFunction = () => [];
 
@@ -24,7 +26,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-screen">
+      <body>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -35,6 +37,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
 export default function App() {
   const { account, authenticate } = useAuth();
+  const { theme } = useTheme();
 
   useEffect(() => {
     authenticate();
@@ -43,17 +46,18 @@ export default function App() {
   if (account === undefined) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <span className="loading loading-ring w-2xs"></span>
+        <Spinner className="w-2xs" />
       </div>
     );
   }
 
   return (
-    <>
-      <ThemeContextProvider>
+    <ThemeContextProvider>
+      <div className="min-h-screen" data-theme={theme}>
+        <Toaster position={"bottom-right"} reverseOrder={false} gutter={10} />
         <Outlet />
-      </ThemeContextProvider>
-    </>
+      </div>
+    </ThemeContextProvider>
   );
 }
 

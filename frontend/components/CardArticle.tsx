@@ -2,7 +2,7 @@ import { FaThumbsUp } from "react-icons/fa6";
 
 function CardArticle() {
   return (
-    <div className="card w-96 bg-base-100 card-md shadow-sm">
+    <div className="card w-96 bg-base-100 card-md shadow-lg">
       <div className="card-body">
         <h2 className="card-title">Xsmall Card</h2>
         <p>

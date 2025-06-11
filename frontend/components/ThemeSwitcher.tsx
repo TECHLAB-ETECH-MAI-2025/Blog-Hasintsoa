@@ -2,10 +2,16 @@ import { useTheme } from "@/hooks/useTheme";
 
 function ThemeSwitcher() {
   const { toggleTheme } = useTheme();
+
   return (
     <>
       <label className="swap swap-rotate">
-        <input onClick={toggleTheme} type="checkbox" className="theme-controller" value="synthwave" />
+        <input
+          onClick={toggleTheme}
+          type="checkbox"
+          className="theme-controller"
+          value="synthwave"
+        />
         <svg
           className="swap-off h-10 w-10 fill-current"
           xmlns="http://www.w3.org/2000/svg"

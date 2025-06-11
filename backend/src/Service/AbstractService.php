@@ -26,4 +26,9 @@ abstract class AbstractService
             'data' => array_map($cb, $paginatorResult->getQuery()->getResult())
         ];
     }
+
+    public function getAll()
+    {
+        $this->repository->findAll();
+    }
 }

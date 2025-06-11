@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
@@ -17,19 +18,23 @@ class Article
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['articles.index'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
     #[Assert\NotBlank(message: "Ne doit pas être vide")]
     #[Assert\Length(min: 5)]
+    #[Groups(['articles.index'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 5)]
+    #[Groups(['articles.index'])]
     private ?string $content = null;
 
     #[ORM\Column]
+    #[Groups(['articles.index'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
@@ -37,6 +42,7 @@ class Article
      */
     #[ORM\ManyToMany(targetEntity: Category::class)]
     #[Assert\Count(min: 2, minMessage: "Doit contenir au moins 2 catégorie")]
+    #[Groups(['articles.index'])]
     private Collection $categories;
 
     /**
@@ -59,6 +65,7 @@ class Article
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['articles.index'])]
     private ?User $author = null;
 
     public function __construct()

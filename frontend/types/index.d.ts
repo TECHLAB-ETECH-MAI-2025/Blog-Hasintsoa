@@ -7,10 +7,33 @@ export interface User {
   [key: string]: unknown;
 }
 
+export interface Category {
+  id: number;
+  title: string;
+  description: string | null;
+}
+
+export interface Author {
+  id: number;
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
+  createdAt: string;
+}
+
+export interface Article {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  categories: Array<Category>;
+  author: Author;
+}
+
 export interface Response<T> {
   success: boolean;
   status: number;
-  message?: string | null;
+  message: string | null;
   data: T;
 }
 
@@ -19,10 +42,19 @@ interface AuthRequest {
   password: string;
 }
 
-export type FormFieldOptions = {
+export interface FormFieldOptions {
   name: string;
   type: string;
-  placeholder: string | undefined;
+  placeholder?: string | undefined;
   label: string;
-  rules: Record<string, any> | undefined;
+  rules?: Record<string, any> | undefined;
+}
+
+export interface InputFieldOptions extends FormFieldOptions { }
+
+export interface SelectFieldOptions extends FormFieldOptions {
+  selectOptions: {
+    id: string;
+    value: string;
+  }
 }
