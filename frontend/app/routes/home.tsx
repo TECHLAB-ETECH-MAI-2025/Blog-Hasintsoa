@@ -9,6 +9,10 @@ import {
   FaUtensils
 } from "react-icons/fa6";
 import { Link } from "react-router";
+import { useApiFetchPaginated } from "@/hooks/useApiFetchPaginated";
+import type { Article } from "@/types";
+import { articleService } from "@/services/ArticleService";
+import CardSkeleton from "@/components/CardSkeleton";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -18,6 +22,11 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+  const { rows, loading } = useApiFetchPaginated<Iterable<Article>>(
+    articleService.getAllPaginated.bind(articleService),
+    6
+  );
+
   return (
     <>
       <section className="hero min-h-[400px] bg-base-200 rounded-box mb-12">
@@ -38,9 +47,20 @@ export default function Home() {
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6">Featured Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <CardArticle />
-            <CardArticle />
-            <CardArticle />
+            {!loading ? (
+              <>
+                {rows &&
+                  Array.from(rows).map((row, index) => (
+                    <CardArticle article={row} key={index} />
+                  ))}
+              </>
+            ) : (
+              <>
+                {Array.from({ length: 9 }).map((_, index) => (
+                  <CardSkeleton key={index} className="min-h-48" />
+                ))}
+              </>
+            )}
           </div>
         </section>
 
@@ -71,12 +91,20 @@ export default function Home() {
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6">Recent Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <CardArticle />
-            <CardArticle />
-            <CardArticle />
-            <CardArticle />
-            <CardArticle />
-            <CardArticle />
+            {!loading ? (
+              <>
+                {rows &&
+                  Array.from(rows).map((row, index) => (
+                    <CardArticle article={row} key={index} />
+                  ))}
+              </>
+            ) : (
+              <>
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <CardSkeleton key={index} className="min-h-48" />
+                ))}
+              </>
+            )}
           </div>
         </section>
         <div className="flex justify-center">

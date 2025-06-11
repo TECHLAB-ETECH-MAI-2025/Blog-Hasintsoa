@@ -19,11 +19,9 @@
 									{{ category.title }}
 								</span>
 							{% endfor %}
-							{% if article.content|length > 100 %}
-								<div class="text-end mt-2">
-									<a class="btn btn-primary" href="{{ path('app_article_show', {'id': article.id}) }}">Voir plus</a>
-								</div>
-							{% endif %}
+							<div class="text-end mt-2">
+								<a class="btn btn-primary" href="{{ path('app_article_show', {'id': article.id}) }}">Voir plus</a>
+							</div>
 						</div>
 					</div>
 				</div>
