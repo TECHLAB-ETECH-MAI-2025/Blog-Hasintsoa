@@ -3,6 +3,7 @@
 namespace App\Service\Category;
 
 use App\Dto\CategoryDto;
+use App\Dto\PaginationDto;
 use App\Dto\RequestCategoryDto;
 use App\Entity\Category;
 use Doctrine\Common\Collections\Collection;
@@ -17,6 +18,13 @@ interface CategoryServiceInterface
      * @return array
      */
     public function paginateDataTable(Request $request, $cb): array;
+
+    /**
+     * Paginate categories for Api with PaginationDto
+     * @param \App\Dto\PaginationDto $paginationDto
+     * @return array
+     */
+    public function paginateWithPaginationDto(PaginationDto $paginationDto): array;
 
     /**
      * Get Category By Id

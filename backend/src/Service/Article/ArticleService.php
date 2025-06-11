@@ -3,7 +3,6 @@
 namespace App\Service\Article;
 
 use App\Dto\ArticleDto;
-use App\Dto\AuthorDto;
 use App\Dto\RequestArticleDto;
 use App\Entity\Article;
 use App\Entity\User;

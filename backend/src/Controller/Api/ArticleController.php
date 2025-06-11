@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Dto\CommentArticleDto;
+use App\Dto\PaginationDto;
 use App\Dto\RequestArticleDto;
 use App\Entity\Article;
 use App\Entity\ArticleLike;
@@ -19,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -204,6 +206,23 @@ final class ArticleController extends AbstractController
         ], [
             'groups' => 'articles.index'
         ]);
+    }
+
+    #[Route('/paginated', name: 'api_article_paginated', methods: ['GET'])]
+    public function getPaginatedArticles(
+        #[MapQueryString]
+        PaginationDto $paginationDto
+    ): JsonResponse {
+        return $this->json(
+            $this->articleService->paginateWithPaginationDto($paginationDto),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/json'
+            ],
+            [
+                'groups' => 'articles.index'
+            ]
+        );
     }
 
     #[Route('/{id}', name: 'api_article_show', methods: ['GET'])]

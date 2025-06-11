@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Dto\PaginationDto;
+use Doctrine\ORM\Persisters\Exception\UnrecognizedField;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractService
@@ -27,8 +29,51 @@ abstract class AbstractService
         ];
     }
 
-    public function getAll()
+    public function paginateWithPaginationDto(PaginationDto $paginationDto): array
     {
-        $this->repository->findAll();
+        $data = [];
+
+        $orderBy = [];
+        if (isset($paginationDto->orderColumn) && isset($paginationDto->orderDir))
+            $orderBy[$paginationDto->orderColumn] = $paginationDto->orderDir;
+
+        try {
+            $data['rows'] = $this->repository->findBy(
+                [],
+                $orderBy,
+                $paginationDto->size,
+                $paginationDto->size * ($paginationDto->page - 1)
+            );
+            $data['message'] = 'All Paginated Data';
+        } catch (UnrecognizedField $e) {
+            $data['rows'] = $this->repository->findBy(
+                [],
+                [],
+                $paginationDto->size,
+                $paginationDto->size * ($paginationDto->page - 1)
+            );
+            $data['message'] = $e->getMessage();
+        }
+
+        $count = $this->repository->count([]);
+
+        return [
+            ...$data,
+            'page' => [
+                'size' => $paginationDto->size,
+                'totalElements' => $count,
+                'currentPage' => $paginationDto->page,
+                'totalPages' => ceil($count / $paginationDto->size)
+            ]
+        ];
+    }
+
+    /**
+     * Get All Entity Table
+     * @return array
+     */
+    public function getAll(): array
+    {
+        return $this->repository->findAll();
     }
 }

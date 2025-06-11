@@ -22,7 +22,7 @@ function CardArticle() {
               <FaThumbsUp size={18} />
             </span>
           </div>
-          <button className="btn btn-primary">Buy Now</button>
+          <button className="btn btn-primary">Voir plus</button>
         </div>
       </div>
     </div>

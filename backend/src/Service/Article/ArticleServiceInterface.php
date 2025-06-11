@@ -3,6 +3,7 @@
 namespace App\Service\Article;
 
 use App\Dto\ArticleDto;
+use App\Dto\PaginationDto;
 use App\Dto\RequestArticleDto;
 use App\Entity\Article;
 use Doctrine\Common\Collections\Collection;
@@ -17,6 +18,13 @@ interface ArticleServiceInterface
      * @return array
      */
     public function paginateDataTable(Request $request, $cb): array;
+
+    /**
+     * Paginate articles for Api with PaginationDto
+     * @param \App\Dto\PaginationDto $paginationDto
+     * @return array
+     */
+    public function paginateWithPaginationDto(PaginationDto $paginationDto): array;
 
     /**
      * Add Article from Dto
