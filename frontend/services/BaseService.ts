@@ -26,6 +26,8 @@ export class BaseService {
     const url = new URL(`${this._backendUrl + this._requestPrefix}/paginated`)
     url.searchParams.set("page", page.toString())
     url.searchParams.set("size", size.toString())
+    url.searchParams.set("orderColumn", "createdAt")
+    url.searchParams.set("orderDir", "desc")
     const r = await fetch(url.toString(), {
       method: "GET",
       credentials: "include",
