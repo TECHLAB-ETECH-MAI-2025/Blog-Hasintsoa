@@ -214,7 +214,10 @@ final class ArticleController extends AbstractController
         PaginationDto $paginationDto
     ): JsonResponse {
         return $this->json(
-            $this->articleService->paginateWithPaginationDto($paginationDto),
+            [
+                'success' => true,
+                'data' => $this->articleService->paginateWithPaginationDto($paginationDto),
+            ],
             Response::HTTP_OK,
             [
                 'Content-Type' => 'application/json'

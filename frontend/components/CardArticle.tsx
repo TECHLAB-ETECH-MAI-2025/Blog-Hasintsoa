@@ -1,28 +1,34 @@
+import type { Article } from "@/types";
 import { FaThumbsUp } from "react-icons/fa6";
+import { Link } from "react-router";
 
-function CardArticle() {
+function CardArticle({ article }: { article: Article }) {
   return (
     <div className="card w-96 bg-base-100 card-md shadow-lg">
       <div className="card-body">
-        <h2 className="card-title">Xsmall Card</h2>
+        <h2 className="card-title">{article.title}</h2>
         <p>
-          A card component has a figure, a body part, and inside body there are
-          title and actions parts
+          {article.content.length > 100
+            ? article.content.slice(0, 150) + " . . . ."
+            : article.content}
         </p>
         <div className="card-actions">
-          <div className="badge badge-md badge-outline">Fashion</div>
-          <div className="badge badge-md badge-outline">Products</div>
+          {Array.from(article.categories).map((category) => (
+            <div className="badge badge-md badge-outline">{category.title}</div>
+          ))}
         </div>
         <div className="justify-between items-center card-actions">
           <div className="flex items-center text-sm text-gray-500">
-            <span>March 10, 2023</span>
+            <span>{new Date(article.createdAt).toDateString()}</span>
             <span className="mx-2">•</span>
             <span className="flex items-center gap-2 border border-slate-500 px-2 text-sm rounded-4xl cursor-pointer">
               6
               <FaThumbsUp size={18} />
             </span>
           </div>
-          <button className="btn btn-primary">Voir plus</button>
+          <Link to={`/articles/${article.id}`} className="btn btn-primary">
+            Voir plus
+          </Link>
         </div>
       </div>
     </div>

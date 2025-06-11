@@ -22,6 +22,21 @@ export class BaseService {
     throw new ApiError(r.status, await r.json())
   }
 
+  async getAllPaginated<T>(page: number, size: number = 10): Promise<T> {
+    const url = new URL(`${this._backendUrl + this._requestPrefix}/paginated`)
+    url.searchParams.set("page", page.toString())
+    url.searchParams.set("size", size.toString())
+    const r = await fetch(url.toString(), {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json"
+      }
+    })
+    if (r.ok) return r.json();
+    throw new ApiError(r.status, await r.json())
+  }
+
   async getById<T>(id: number): Promise<T> {
     const r = await fetch(`${this._backendUrl + this._requestPrefix}/${id}`, {
       method: "GET",
