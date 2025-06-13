@@ -21,11 +21,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['articles.index'])]
+    #[Groups(['articles.index', 'user.message'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['articles.index'])]
+    #[Groups(['articles.index', 'user.message'])]
     private ?string $email = null;
 
     /**
@@ -41,15 +41,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     private ?string $password = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['articles.index'])]
+    #[Groups(['articles.index', 'user.message'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['articles.index'])]
+    #[Groups(['articles.index', 'user.message'])]
     private ?string $lastName = null;
 
     #[ORM\Column]
-    #[Groups(['articles.index'])]
+    #[Groups(['articles.index', 'user.message'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]

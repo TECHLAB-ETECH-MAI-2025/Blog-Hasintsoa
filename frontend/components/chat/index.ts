@@ -7,5 +7,9 @@ export {
 } from "./ChatInput"
 
 export {
-  default as ChatUsersList
-} from "./ChatUsersList"
+  default as ChatUserCard
+} from "./ChatUserCard"
+
+export {
+  default as ChatUserSkeleton
+} from "./ChatUserSkeleton"

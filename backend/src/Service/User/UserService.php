@@ -38,4 +38,12 @@ final class UserService extends AbstractService implements UserServiceInterface
         $authorDto->createdAt = $user->getCreatedAt();
         return $authorDto;
     }
+
+    public function convertAllUsersToAuthorDto(array $users): array
+    {
+        return array_map(
+            fn($user): AuthorDto => $this->convertUserToAuthorDto($user),
+            $users->toArray()
+        );
+    }
 }
