@@ -7,7 +7,7 @@ import { dataTableOptions } from "../main.js";
 jQuery(function ($) {
   $("#users-table").DataTable({
     ...dataTableOptions,
-    ajax: { url: "/api/users/data-table", type: "POST" },
+    ajax: { url: "/app/users/data-table", type: "POST" },
     columns: [
       { data: "id", searchable: false },
       { data: "fullName" },

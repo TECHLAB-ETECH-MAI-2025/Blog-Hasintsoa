@@ -11,13 +11,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route("/api/users")]
 #[IsGranted("ROLE_ADMIN")]
 final class UserController extends AbstractController
 {
     public function __construct(private readonly UserServiceInterface $userService) {}
 
-    #[Route("/data-table", name: "api_users_data", methods: ['POST'])]
+    #[Route("/app/users/data-table", name: "api_users_data", methods: ['POST'])]
 
     public function index(Request $request): JsonResponse
     {
