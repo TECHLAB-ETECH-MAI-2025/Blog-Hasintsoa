@@ -387,4 +387,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
             ->setEmail($payload['email'] ?? null)
             ->setRoles($payload['roles']);
     }
+
+    public function __toString(): string
+    {
+        return $this->getFullName();
+    }
 }

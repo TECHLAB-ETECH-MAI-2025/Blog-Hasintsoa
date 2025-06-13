@@ -153,6 +153,10 @@ final class ArticleController extends AbstractController
             $entityManager->persist($like);
         }
         $entityManager->flush();
+
+        return $this->json([
+            'message' => $like->getAuthor()->getEmail()
+        ]);
         return $this->json([
             "success" => true,
             "liked" => $liked,
