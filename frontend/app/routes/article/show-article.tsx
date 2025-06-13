@@ -1,16 +1,51 @@
 import { CommentCard, Spinner } from "@/components";
+import { SubmitBtn } from "@/components/inputForm";
+import { RatingBtn } from "@/components/rating";
+import { CommentForm as FormField } from "@/forms/ArticleForm";
 import { useApiFetch } from "@/hooks/useApiFetch";
+import { cn, wait } from "@/libs/util";
 import { articleService } from "@/services/ArticleService";
 import type { Article, Category } from "@/types";
-import { FaPaperPlane } from "react-icons/fa6";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { FaPaperPlane, FaRegThumbsUp, FaThumbsUp } from "react-icons/fa6";
 import { useParams } from "react-router";
 
 function ShowArticle() {
   const { id } = useParams();
+  const [like, setLike] = useState(true);
+  const [rate, setRate] = useState(0);
+  const [likesCount, setLikesCount] = useState(0);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setValue
+  } = useForm();
+
+  const onSubmit = async (data: {}) => {
+    await wait();
+    console.log(data);
+    setValue(FormField.content.name, "");
+    toast.success("Commenter avec succès");
+  };
+
   const { item, loading } = useApiFetch<Article>(
     articleService.getById.bind(articleService),
     id ? parseInt(id) : undefined
   );
+
+  const rateArticle = (rating: number) => {
+    setRate(rating);
+  };
+
+  const likeArticle = () => {
+    if (like) setLikesCount((likesCount) => likesCount - 1);
+    else setLikesCount((likesCount) => likesCount + 1);
+    setLike((like) => !like);
+  };
 
   return (
     <>
@@ -72,6 +107,51 @@ function ShowArticle() {
                         </span>
                       ))}
                   </div>
+                  <div className="flex gap-5 items-center mt-4">
+                    <div className="border-3 border-warning rounded px-3 py-2">
+                      <div className="flex gap-x-1" id="article-range-26">
+                        <RatingBtn
+                          isSolid={rate >= 1}
+                          rating={1}
+                          ratingCb={rateArticle}
+                        />
+                        <RatingBtn
+                          isSolid={rate >= 2}
+                          rating={2}
+                          ratingCb={rateArticle}
+                        />
+                        <RatingBtn
+                          isSolid={rate >= 3}
+                          rating={3}
+                          ratingCb={rateArticle}
+                        />
+                        <RatingBtn
+                          isSolid={rate >= 4}
+                          rating={4}
+                          ratingCb={rateArticle}
+                        />
+                        <RatingBtn
+                          isSolid={rate >= 5}
+                          rating={5}
+                          ratingCb={rateArticle}
+                        />
+                      </div>
+                    </div>
+                    <button
+                      onClick={likeArticle}
+                      type="button"
+                      className="btn bg-slate-700/35 hover:border-blue-600 border-2"
+                    >
+                      {like ? (
+                        <FaThumbsUp className="text-blue-600" size={25} />
+                      ) : (
+                        <FaRegThumbsUp className="text-black" size={25} />
+                      )}
+                      <span className="bg-white p-1 rounded text-dark ms-3">
+                        {likesCount}
+                      </span>
+                    </button>
+                  </div>
                 </div>
                 {/* Author Bio */}
                 <div className="mt-12 p-6 rounded-lg bg-gray-50">
@@ -96,20 +176,37 @@ function ShowArticle() {
 
                 <div className="mt-12">
                   <h4 className="text-lg font-bold mb-4">Leave a comment</h4>
-                  <form>
+                  <form onSubmit={handleSubmit(onSubmit)}>
                     <textarea
-                      className="textarea textarea-bordered w-full h-32"
-                      placeholder="Write your thoughts here..."
-                      defaultValue={""}
+                      {...register(
+                        FormField.content.name,
+                        FormField.content.rules
+                      )}
+                      className={cn(
+                        "textarea textarea-bordered w-full h-32",
+                        errors[FormField.content.name] &&
+                          "border-2 border-red-600"
+                      )}
+                      placeholder={FormField.content.placeholder}
                     />
+                    {errors[FormField.content.name] && (
+                      <span className="text-red-600">
+                        {errors[FormField.content.name]?.message?.toString()}
+                      </span>
+                    )}
                     <div className="flex justify-between mt-4">
                       <button type="reset" className="btn btn-outline">
                         Cancel
                       </button>
-                      <button type="submit" className="btn btn-primary">
+                      <SubmitBtn
+                        isSubmitting={isSubmitting}
+                        className="btn btn-primary"
+                        disabled={isSubmitting}
+                        spinnerClass="text-slate-900"
+                      >
                         Post Comment
                         <FaPaperPlane />
-                      </button>
+                      </SubmitBtn>
                     </div>
                   </form>
 

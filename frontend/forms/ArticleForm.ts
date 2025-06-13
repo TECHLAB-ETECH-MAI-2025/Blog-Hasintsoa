@@ -42,3 +42,21 @@ export const ArticleForm: {
     categories: yup.array().required().min(2)
   })
 }
+
+export const CommentForm: {
+  content: FormFieldOptions;
+} = {
+  content: {
+    label: "Laissez un Commentaire",
+    name: "content",
+    type: "textarea",
+    placeholder: "Écrivez votre commentaire ici...",
+    rules: {
+      required: "Veuillez écrire un commentaire valide",
+      minLength: {
+        value: 5,
+        message: "Ce champ doit comporter au moins 5 caractères"
+      }
+    },
+  }
+}
