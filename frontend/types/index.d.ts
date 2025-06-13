@@ -13,6 +13,13 @@ export interface Category {
   description: string | null;
 }
 
+export interface Comment {
+  id: number;
+  content: string;
+  createdAt: string;
+  authorDto: Author;
+}
+
 export interface Author {
   id: number;
   email: string;

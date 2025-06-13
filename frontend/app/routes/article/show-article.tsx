@@ -5,8 +5,8 @@ import { CommentForm as FormField } from "@/forms/ArticleForm";
 import { useApiFetch } from "@/hooks/useApiFetch";
 import { cn, wait } from "@/libs/util";
 import { articleService } from "@/services/ArticleService";
-import type { Article, Category } from "@/types";
-import { useState } from "react";
+import type { Article, Category, Comment } from "@/types";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaPaperPlane, FaRegThumbsUp, FaThumbsUp } from "react-icons/fa6";
@@ -17,6 +17,9 @@ function ShowArticle() {
   const [like, setLike] = useState(true);
   const [rate, setRate] = useState(0);
   const [likesCount, setLikesCount] = useState(0);
+  const [comments, setComments] = useState<Array<Comment>>([]);
+  const [commentsCount, setCommentsCount] = useState(0);
+  const [commentLoading, startTransition] = useTransition();
 
   const {
     register,
@@ -25,9 +28,14 @@ function ShowArticle() {
     setValue
   } = useForm();
 
-  const onSubmit = async (data: {}) => {
+  const onSubmit = async (data: any) => {
     await wait();
-    console.log(data);
+    const { comment, commentsCount } = await articleService.addComment(
+      data,
+      id ? parseInt(id) : 0
+    );
+    setComments([comment, ...comments]);
+    setCommentsCount(commentsCount);
     setValue(FormField.content.name, "");
     toast.success("Commenter avec succès");
   };
@@ -45,6 +53,17 @@ function ShowArticle() {
     if (like) setLikesCount((likesCount) => likesCount - 1);
     else setLikesCount((likesCount) => likesCount + 1);
     setLike((like) => !like);
+  };
+
+  const getCommentByArticleId = () => {
+    startTransition(async () => {
+      await wait();
+      const { comments, commentsCount } = await articleService.getComments(
+        id ? parseInt(id) : 0
+      );
+      setComments(comments);
+      setCommentsCount(commentsCount);
+    });
   };
 
   return (
@@ -211,10 +230,33 @@ function ShowArticle() {
                   </form>
 
                   <div className="mt-8">
-                    <h3 className="text-xl font-bold mb-6">Discussion (5)</h3>
+                    <h3 className="text-xl font-bold mb-6">
+                      Discussion ({commentsCount})
+                    </h3>
+
                     <div className="space-y-6">
-                      <CommentCard />
-                      <CommentCard />
+                      {comments && comments.length > 1 ? (
+                        Array.from(comments, (comment, index) => (
+                          <CommentCard comment={comment} key={index} />
+                        ))
+                      ) : (
+                        <div className="flex flex-col gap-y-2 items-center justify-center">
+                          <h1>Pas de commentaire</h1>
+                          <button
+                            onClick={getCommentByArticleId}
+                            type="button"
+                            className="btn btn-primary"
+                          >
+                            {commentLoading ? (
+                              <span
+                                className={"loading loading-bars loading-lg"}
+                              ></span>
+                            ) : (
+                              "Voir les commentaires"
+                            )}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
