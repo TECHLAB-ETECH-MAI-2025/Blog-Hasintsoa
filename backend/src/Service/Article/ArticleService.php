@@ -5,7 +5,9 @@ namespace App\Service\Article;
 use App\Dto\ArticleDto;
 use App\Dto\RequestArticleDto;
 use App\Entity\Article;
+use App\Entity\ArticleLike;
 use App\Entity\User;
+use App\Repository\ArticleLikeRepository;
 use App\Repository\ArticleRepository;
 use App\Service\AbstractService;
 use App\Service\Category\CategoryServiceInterface;
@@ -22,7 +24,8 @@ final class ArticleService extends AbstractService implements ArticleServiceInte
         private readonly Security $security,
         private readonly EntityManagerInterface $entityManager,
         private readonly UserServiceInterface $userService,
-        private readonly CategoryServiceInterface $categoryService
+        private readonly CategoryServiceInterface $categoryService,
+        private readonly ArticleLikeRepository $likeRepository
     ) {
         $this->repository = $repository;
         $this->dataTableColumns = [
@@ -57,6 +60,37 @@ final class ArticleService extends AbstractService implements ArticleServiceInte
         $this->entityManager->persist($article);
         $this->entityManager->flush();
         return $article;
+    }
+
+    public function likeArticle(Article $article, Request $request): array
+    {
+        $connectedUser = $this->security->getUser();
+        if ($connectedUser instanceof User)
+            $user = $this->entityManager->getRepository(User::class)->find([
+                'id' => $connectedUser->getId()
+            ]);
+        $existingLike = $this->likeRepository->findOneBy([
+            "article" => $article,
+            "author" => $user
+        ]);
+        $liked = true;
+        if ($existingLike) {
+            $this->entityManager->remove($existingLike);
+            $liked = false;
+        } else {
+            $like = new ArticleLike();
+            $like->setArticle($article);
+            $like->setIpAddress($request->getClientIp());
+            $like->setAuthor($user);
+            $like->setCreatedAt(new \DateTimeImmutable());
+            $this->entityManager->persist($like);
+        }
+        $this->entityManager->flush();
+        return [
+            'liked' => $liked,
+            'articleId' => $article->getId(),
+            "likesCount" => $article->getLikes()->count()
+        ];
     }
 
     public function convertToDto(Article $article): ArticleDto

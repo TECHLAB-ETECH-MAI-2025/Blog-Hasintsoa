@@ -10,6 +10,7 @@ use App\Repository\ArticleRepository;
 use App\Service\Article\ArticleServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -20,7 +21,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class ArticleController extends AbstractController
 {
     public function __construct(private readonly ArticleServiceInterface $articleService) {}
-
 
     #[Route('', name: 'api_article_list', methods: ['GET'])]
     public function getAllArticles(ArticleRepository $articleRepository): JsonResponse
@@ -84,6 +84,15 @@ final class ArticleController extends AbstractController
             'data' => $this->articleService->convertToDto($article),
             'message' => 'Article added successfully'
         ], Response::HTTP_CREATED);
+    }
+
+    #[Route('/{id}/like', name: 'api_article_like', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function likeArticle(
+        Article $article,
+        Request $request
+    ): JsonResponse {
+        return $this->json($this->articleService->likeArticle($article, $request));
     }
 
     #[Route('/{id}/comment', name: 'api_article_comments', methods: ['POST'])]

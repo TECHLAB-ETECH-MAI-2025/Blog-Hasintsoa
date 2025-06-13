@@ -3,14 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use App\Entity\ArticleLike;
 use App\Entity\ArticleRating;
 use App\Entity\Comment;
 use App\Entity\User;
 use App\Form\CommentForm;
-use App\Repository\ArticleLikeRepository;
 use App\Repository\ArticleRatingRepository;
 use App\Repository\ArticleRepository;
+use App\Service\Article\ArticleServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,6 +21,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('app/articles')]
 final class ArticleApiController extends AbstractController
 {
+    public function __construct(
+        private readonly ArticleServiceInterface $articleService
+    ) {}
+
     #[Route(path: "/data-table", name: 'app_article_data', methods: ['POST'])]
     public function listForDataTable(
         ArticleRepository $articleRepository,
@@ -123,35 +126,9 @@ final class ArticleApiController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function likeArticle(
         Article $article,
-        Request $request,
-        EntityManagerInterface $entityManager,
-        ArticleLikeRepository $likeRepository
+        Request $request
     ): JsonResponse {
-        $connectedUser = $this->getUser();
-        $existingLike = $likeRepository->findOneBy([
-            "article" => $article,
-            "author" => $connectedUser
-        ]);
-        $liked = true;
-        if ($existingLike) {
-            $entityManager->remove($existingLike);
-            $liked = false;
-        } else {
-            $like = new ArticleLike();
-            $like->setArticle($article);
-            $like->setIpAddress($request->getClientIp());
-            $like->setAuthor($connectedUser);
-            $like->setCreatedAt(new \DateTimeImmutable());
-            $entityManager->persist($like);
-        }
-        $entityManager->flush();
-
-        return $this->json([
-            "success" => true,
-            "liked" => $liked,
-            "articleId" => $article->getId(),
-            "likesCount" => $article->getLikes()->count()
-        ]);
+        return $this->json($this->articleService->likeArticle($article, $request));
     }
 
     #[Route('/{id}/rate', name: 'app_article_rate', methods: ['POST'])]

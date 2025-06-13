@@ -34,6 +34,13 @@ interface ArticleServiceInterface
     public function addArticle(RequestArticleDto $request): Article;
 
     /**
+     * Like article by article and connected user
+     * @param \App\Entity\Article $article
+     * @return array
+     */
+    public function likeArticle(Article $article, Request $request): array;
+
+    /**
      * Convert Article To Dto
      * @param \App\Entity\Article $article
      * @return \App\Dto\ArticleDto

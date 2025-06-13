@@ -23,7 +23,7 @@ class ArticleLike
     #[ORM\JoinColumn(nullable: false)]
     private ?Article $article = null;
 
-    #[ORM\ManyToOne(inversedBy: 'articleLikes', cascade: ['remove', 'persist'])]
+    #[ORM\ManyToOne(inversedBy: 'articleLikes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
 
