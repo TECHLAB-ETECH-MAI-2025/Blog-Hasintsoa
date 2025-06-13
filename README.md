@@ -1,8 +1,14 @@
 # Symfony Blog Techlab
 
+Application de blog avec système de messagerie en temp réel développé avec **symfony**, **mercure** et **react**
+
 Base de donnée initial : PostgreSQL
 
-système de Blog avec le système de sécurité avec symfony
+Pour exécuter les migrations
+
+```bash
+symfony console doctrine:migrations:migrate
+```
 
 Pour générer des données dans la base de donnée
 
@@ -34,7 +40,9 @@ User authentication
 
 ---
 
-Pour lancer le projet
+### Pour lancer le projet
+
+#### BACKEND
 
 ```bash
 npm run dev
@@ -45,6 +53,12 @@ OU
 ```bash
 symfony serve
 npm run watch
+```
+
+#### FRONTEND
+
+```bash
+npm run dev
 ```
 
 > Hasintsoa
