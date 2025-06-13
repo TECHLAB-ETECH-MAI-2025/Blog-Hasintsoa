@@ -6,7 +6,7 @@ jQuery(function ($) {
     e.preventDefault();
     e.stopPropagation();
     $.ajax({
-      url: `/api/articles/${$(this).data("article-id")}/likes`,
+      url: `/app/articles/${$(this).data("article-id")}/like`,
       method: "POST",
       dataType: "json",
       success: function (response) {
