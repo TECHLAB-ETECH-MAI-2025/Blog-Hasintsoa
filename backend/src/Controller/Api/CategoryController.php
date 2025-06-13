@@ -14,12 +14,11 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route("/api/categories")]
 final class CategoryController extends AbstractController
 {
     public function __construct(private readonly CategoryServiceInterface $categoryService) {}
 
-    #[Route("/data-table", name: "api_categories_data", methods: ["POST"])]
+    #[Route("/app/categories/data-table", name: "api_categories_data", methods: ["POST"])]
     #[IsGranted("ROLE_ADMIN")]
     public function index(Request $request): JsonResponse
     {
@@ -44,7 +43,7 @@ final class CategoryController extends AbstractController
         );
     }
 
-    #[Route('', name: 'api_categories', methods: ['GET'])]
+    #[Route('/api/categories', name: 'api_categories', methods: ['GET'])]
     public function getAllCategories(CategoryRepository $categoryRepository): JsonResponse
     {
         return $this->json([
@@ -53,7 +52,7 @@ final class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route('', name: 'api_categories_add', methods: ['POST'])]
+    #[Route('/api/categories', name: 'api_categories_add', methods: ['POST'])]
     public function createCategory(#[MapRequestPayload] RequestCategoryDto $categoryDto): JsonResponse
     {
         $category = $this->categoryService->addCategory($categoryDto);
