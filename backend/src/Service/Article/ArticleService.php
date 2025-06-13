@@ -70,6 +70,34 @@ final class ArticleService extends AbstractService implements ArticleServiceInte
         return $article;
     }
 
+    public function getLikesCountByArticle(Article $article): array
+    {
+        $existingLike = $this->likeRepository->findOneBy([
+            'article' => $article,
+            'author' => $this->getCurrentUser()
+        ]);
+        return [
+            'liked' => $existingLike ? true : false,
+            'likesCount' => $this->likeRepository->count([
+                'article' => $article,
+                'author' => $this->getCurrentUser()
+            ]),
+            'articleId' => $article->getId()
+        ];
+    }
+
+    public function getRatesCountByArticle(Article $article): array
+    {
+        $existingRate = $this->ratingRepository->findOneBy([
+            'article' => $article,
+            'author' => $this->getCurrentUser()
+        ]);
+        return [
+            'rates' => $existingRate ? $existingRate->getRating() : 0,
+            'articleId' => $article->getId()
+        ];
+    }
+
     public function likeArticle(Article $article, Request $request): array
     {
         $existingLike = $this->likeRepository->findOneBy([

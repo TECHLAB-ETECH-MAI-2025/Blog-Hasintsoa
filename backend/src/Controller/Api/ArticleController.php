@@ -41,6 +41,7 @@ final class ArticleController extends AbstractController
         ]);
     }
 
+    /** Paginer les articles par un système de groupe */
     #[Route('/paginated', name: 'api_article_paginated', methods: ['GET'])]
     public function getPaginatedArticles(
         #[MapQueryString]
@@ -61,6 +62,7 @@ final class ArticleController extends AbstractController
         );
     }
 
+    /** Obtenir l'article par l'id */
     #[Route('/{id}', name: 'api_article_show', methods: ['GET'])]
     public function getArticleById(string $id, ArticleRepository $articleRepository): JsonResponse
     {
@@ -77,6 +79,7 @@ final class ArticleController extends AbstractController
         ]);
     }
 
+    /** Ajouter une nouvelle article */
     #[Route('', name: 'api_article_add', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function createArticle(
@@ -91,6 +94,7 @@ final class ArticleController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
+    /** aimer une article par l'utilisateur connecté */
     #[Route('/{id}/like', name: 'api_article_like', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function likeArticle(
@@ -102,6 +106,7 @@ final class ArticleController extends AbstractController
         );
     }
 
+    /** Commenter l'article */
     #[Route('/{id}/comment', name: 'api_article_comment', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function commentArticle(
@@ -114,6 +119,7 @@ final class ArticleController extends AbstractController
         );
     }
 
+    /** Obtenir le nombre de commentaire par l'article */
     #[Route('/{id}/comment', name: 'api_article_comments', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function getCommentsArticle(
@@ -131,6 +137,29 @@ final class ArticleController extends AbstractController
         );
     }
 
+    /** obtenir le nombre d'étoile pour une article */
+    #[Route('/{id}/rate', name: 'api_article_rates', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function getRatesArticle(
+        Article $article
+    ): JsonResponse {
+        return $this->json(
+            $this->articleService->getRatesCountByArticle($article)
+        );
+    }
+
+    /** Obtenir le nombre de j'aime pour l'article et si l'article est déjà aimé par l'utilisateur connecté */
+    #[Route('/{id}/like', name: 'api_article_likes', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function getLikesArticle(
+        Article $article
+    ): JsonResponse {
+        return $this->json(
+            $this->articleService->getLikesCountByArticle($article)
+        );
+    }
+
+    /** Noter une article */
     #[Route('/{id}/rate', name: 'api_article_rate', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function rateArticle(

@@ -45,51 +45,7 @@ export default function Home() {
       </section>
       <div className="container mx-auto px-4 py-8">
         <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6">Featured Posts</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {!loading ? (
-              <>
-                {rows &&
-                  Array.from(rows).map((row, index) => (
-                    <CardArticle article={row} key={index} />
-                  ))}
-              </>
-            ) : (
-              <>
-                {Array.from({ length: 9 }).map((_, index) => (
-                  <CardSkeleton key={index} className="min-h-48" />
-                ))}
-              </>
-            )}
-          </div>
-        </section>
-
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6">Popular Categories</h2>
-          <div className="flex flex-wrap gap-4">
-            <a className="badge badge-lg badge-primary p-4 hover:scale-105 transition-transform">
-              <FaLaptopCode className="mr-2" /> Technology
-            </a>
-            <a className="badge badge-lg badge-secondary p-4 hover:scale-105 transition-transform">
-              <FaPaintbrush className="mr-2" /> Design
-            </a>
-            <a className="badge badge-lg badge-accent p-4 hover:scale-105 transition-transform">
-              <FaChartLine className="mr-2" /> Business
-            </a>
-            <a className="badge badge-lg badge-neutral p-4 hover:scale-105 transition-transform">
-              <FaCamera className="mr-2" /> Photography
-            </a>
-            <a className="badge badge-lg badge-success p-4 hover:scale-105 transition-transform">
-              <FaHeart className=" mr-2" /> Lifestyle
-            </a>
-            <a className="badge badge-lg badge-warning p-4 hover:scale-105 transition-transform">
-              <FaUtensils className="mr-2" /> Food
-            </a>
-          </div>
-        </section>
-
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6">Recent Posts</h2>
+          <h2 className="text-3xl font-bold mb-6">Articles Récents</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {!loading ? (
               <>
@@ -109,7 +65,7 @@ export default function Home() {
         </section>
         <div className="flex justify-center">
           <Link to={"/articles"} className="btn btn-outline">
-            View All Posts
+            Voir les articles
           </Link>
         </div>
       </div>

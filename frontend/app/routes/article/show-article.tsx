@@ -6,7 +6,7 @@ import { useApiFetch } from "@/hooks/useApiFetch";
 import { cn, wait } from "@/libs/util";
 import { articleService } from "@/services/ArticleService";
 import type { Article, Category, Comment } from "@/types";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaPaperPlane, FaRegThumbsUp, FaThumbsUp } from "react-icons/fa6";
@@ -28,6 +28,25 @@ function ShowArticle() {
     setValue
   } = useForm();
 
+  /**
+   * charger la page avec de vrai donnée
+   */
+  const initiatePage = async () => {
+    const { rates } = await articleService.getRateArticleByArticleId(
+      id ? parseInt(id) : 0
+    );
+    setRate(rates);
+    const { liked, likesCount } =
+      await articleService.getlikeArticleByArticleId(id ? parseInt(id) : 0);
+    setLike(liked);
+    setLikesCount(likesCount);
+  };
+
+  useEffect(() => {
+    initiatePage();
+  }, []);
+
+  /** Commenter l'article */
   const onSubmit = async (data: any) => {
     await wait();
     const { comment, commentsCount } = await articleService.addComment(
@@ -40,21 +59,30 @@ function ShowArticle() {
     toast.success("Commenter avec succès");
   };
 
+  /** charger la page avec l'article */
   const { item, loading } = useApiFetch<Article>(
     articleService.getById.bind(articleService),
     id ? parseInt(id) : undefined
   );
 
-  const rateArticle = (rating: number) => {
-    setRate(rating);
+  /** évenement sur clique le système de notation */
+  const rateArticle = async (rating: number) => {
+    const { rates } = await articleService.rateArticleByArticleId(
+      rating,
+      id ? parseInt(id) : 0
+    );
+    setRate(rates);
   };
 
-  const likeArticle = () => {
-    if (like) setLikesCount((likesCount) => likesCount - 1);
-    else setLikesCount((likesCount) => likesCount + 1);
-    setLike((like) => !like);
+  /** évenement sur clique pour le système de like */
+  const likeArticle = async () => {
+    const { liked, likesCount: likeCount } =
+      await articleService.likeArticleByArticleId(id ? parseInt(id) : 0);
+    setLikesCount(likeCount);
+    setLike(liked);
   };
 
+  /** évenement sur clique pour obtenir les commentaires */
   const getCommentByArticleId = () => {
     startTransition(async () => {
       await wait();
@@ -235,7 +263,7 @@ function ShowArticle() {
                     </h3>
 
                     <div className="space-y-6">
-                      {comments && comments.length > 1 ? (
+                      {comments && comments.length > 0 ? (
                         Array.from(comments, (comment, index) => (
                           <CommentCard comment={comment} key={index} />
                         ))

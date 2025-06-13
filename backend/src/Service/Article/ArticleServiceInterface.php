@@ -36,6 +36,20 @@ interface ArticleServiceInterface
     public function addArticle(RequestArticleDto $request): Article;
 
     /**
+     * Get LikesCount by article
+     * @param Article $article
+     * @return array
+     */
+    public function getLikesCountByArticle(Article $article): array;
+
+    /**
+     * Get rates by connected user and article
+     * @param Article $article
+     * @return array
+     */
+    public function getRatesCountByArticle(Article $article): array;
+
+    /**
      * Like article by article and connected user
      * @param \App\Entity\Article $article
      * @return array
