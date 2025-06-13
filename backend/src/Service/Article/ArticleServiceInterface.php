@@ -5,6 +5,7 @@ namespace App\Service\Article;
 use App\Dto\ArticleDto;
 use App\Dto\PaginationDto;
 use App\Dto\RequestArticleDto;
+use App\Dto\RequestCommentDto;
 use App\Entity\Article;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,6 +40,14 @@ interface ArticleServiceInterface
      * @return array
      */
     public function likeArticle(Article $article, Request $request): array;
+
+    /**
+     * Comment article by article and connected user
+     * @param \App\Entity\Article $article
+     * @param \App\Dto\RequestCommentDto $request
+     * @return array
+     */
+    public function commentArticleFromRequestCommentDto(Article $article, RequestCommentDto $request): array;
 
     /**
      * Convert Article To Dto

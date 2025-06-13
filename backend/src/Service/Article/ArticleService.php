@@ -4,13 +4,16 @@ namespace App\Service\Article;
 
 use App\Dto\ArticleDto;
 use App\Dto\RequestArticleDto;
+use App\Dto\RequestCommentDto;
 use App\Entity\Article;
 use App\Entity\ArticleLike;
+use App\Entity\Comment;
 use App\Entity\User;
 use App\Repository\ArticleLikeRepository;
 use App\Repository\ArticleRepository;
 use App\Service\AbstractService;
 use App\Service\Category\CategoryServiceInterface;
+use App\Service\Comment\CommentServiceInterface;
 use App\Service\User\UserServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -25,7 +28,8 @@ final class ArticleService extends AbstractService implements ArticleServiceInte
         private readonly EntityManagerInterface $entityManager,
         private readonly UserServiceInterface $userService,
         private readonly CategoryServiceInterface $categoryService,
-        private readonly ArticleLikeRepository $likeRepository
+        private readonly ArticleLikeRepository $likeRepository,
+        private readonly CommentServiceInterface $commentService
     ) {
         $this->repository = $repository;
         $this->dataTableColumns = [
@@ -64,14 +68,9 @@ final class ArticleService extends AbstractService implements ArticleServiceInte
 
     public function likeArticle(Article $article, Request $request): array
     {
-        $connectedUser = $this->security->getUser();
-        if ($connectedUser instanceof User)
-            $user = $this->entityManager->getRepository(User::class)->find([
-                'id' => $connectedUser->getId()
-            ]);
         $existingLike = $this->likeRepository->findOneBy([
             "article" => $article,
-            "author" => $user
+            "author" => $this->getCurrentUser()
         ]);
         $liked = true;
         if ($existingLike) {
@@ -81,7 +80,7 @@ final class ArticleService extends AbstractService implements ArticleServiceInte
             $like = new ArticleLike();
             $like->setArticle($article);
             $like->setIpAddress($request->getClientIp());
-            $like->setAuthor($user);
+            $like->setAuthor($this->getCurrentUser());
             $like->setCreatedAt(new \DateTimeImmutable());
             $this->entityManager->persist($like);
         }
@@ -90,6 +89,21 @@ final class ArticleService extends AbstractService implements ArticleServiceInte
             'liked' => $liked,
             'articleId' => $article->getId(),
             "likesCount" => $article->getLikes()->count()
+        ];
+    }
+
+    public function commentArticleFromRequestCommentDto(Article $article, RequestCommentDto $request): array
+    {
+        $comment = new Comment();
+        $comment->setArticle($article)
+            ->setContent($request->content)
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setAuthor($this->getCurrentUser());
+        $this->entityManager->persist($comment);
+        $this->entityManager->flush();
+        return [
+            'comment' => $this->commentService->convertToDto($comment),
+            'commentsCount' => $article->getComments()->count()
         ];
     }
 
@@ -111,5 +125,13 @@ final class ArticleService extends AbstractService implements ArticleServiceInte
             fn($article): ArticleDto => $this->convertToDto($article),
             $articles->toArray()
         );
+    }
+
+    private function getCurrentUser(): User
+    {
+        $currentUser = $this->security->getUser();
+        if ($currentUser instanceof User)
+            return $this->userService->getById($currentUser->getId());
+        return $currentUser;
     }
 }

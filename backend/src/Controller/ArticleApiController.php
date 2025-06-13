@@ -89,7 +89,7 @@ final class ArticleApiController extends AbstractController
 
     #[Route('/{id}/comment', name: 'app_article_comment', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function addComment(
+    public function commentArticle(
         Article $article,
         Request $request,
         EntityManagerInterface $entityManager
@@ -99,7 +99,12 @@ final class ArticleApiController extends AbstractController
         $form = $this->createForm(CommentForm::class, $comment);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $comment->setAuthor($this->getUser());
+            $currentUser = $this->getUser();
+            if ($currentUser instanceof User)
+                $user = $entityManager->getRepository(User::class)->findOneBy([
+                    'id' => $currentUser->getId()
+                ]);
+            $comment->setAuthor($user);
             $comment->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($comment);
             $entityManager->flush();
