@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Dto\RequestRatingDto;
 use App\Entity\Article;
 use App\Entity\ArticleRating;
 use App\Entity\Comment;
@@ -15,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -140,32 +142,11 @@ final class ArticleApiController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function rateArticle(
         Article $article,
-        Request $request,
-        EntityManagerInterface $entityManager,
-        ArticleRatingRepository $articleRatingRepository
+        #[MapRequestPayload]
+        RequestRatingDto $request
     ): JsonResponse {
-        $connectedUser = $this->getUser();
-        $existingRates = $articleRatingRepository->findOneBy([
-            "article" => $article,
-            "author" => $connectedUser
-        ]);
-        $rateLength = $request->request->getInt('rating', 1);
-        if ($existingRates) {
-            $existingRates->setRating($rateLength);
-        } else {
-            $rates = new ArticleRating();
-            $rates->setArticle($article);
-            $rates->setRating($rateLength);
-            $rates->setAuthor($connectedUser);
-            $rates->setIpAddress($request->getClientIp());
-            $rates->setCreatedAt(new \DateTimeImmutable());
-            $entityManager->persist($rates);
-        }
-        $entityManager->flush();
-        return $this->json([
-            "success" => true,
-            "articleId" => $article->getId(),
-            "rates" => $rateLength
-        ]);
+        return $this->json(
+            $this->articleService->rateArticle($article, $request)
+        );
     }
 }

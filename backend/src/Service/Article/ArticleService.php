@@ -5,11 +5,14 @@ namespace App\Service\Article;
 use App\Dto\ArticleDto;
 use App\Dto\RequestArticleDto;
 use App\Dto\RequestCommentDto;
+use App\Dto\RequestRatingDto;
 use App\Entity\Article;
 use App\Entity\ArticleLike;
+use App\Entity\ArticleRating;
 use App\Entity\Comment;
 use App\Entity\User;
 use App\Repository\ArticleLikeRepository;
+use App\Repository\ArticleRatingRepository;
 use App\Repository\ArticleRepository;
 use App\Service\AbstractService;
 use App\Service\Category\CategoryServiceInterface;
@@ -29,6 +32,7 @@ final class ArticleService extends AbstractService implements ArticleServiceInte
         private readonly UserServiceInterface $userService,
         private readonly CategoryServiceInterface $categoryService,
         private readonly ArticleLikeRepository $likeRepository,
+        private readonly ArticleRatingRepository $ratingRepository,
         private readonly CommentServiceInterface $commentService
     ) {
         $this->repository = $repository;
@@ -104,6 +108,31 @@ final class ArticleService extends AbstractService implements ArticleServiceInte
         return [
             'comment' => $this->commentService->convertToDto($comment),
             'commentsCount' => $article->getComments()->count()
+        ];
+    }
+
+    public function rateArticle(Article $article, RequestRatingDto $request): array
+    {
+        $existingRates = $this->ratingRepository->findOneBy([
+            "article" => $article,
+            "author" => $this->getCurrentUser()
+        ]);
+        $rateLength = $request->rating;
+        if ($existingRates) {
+            $existingRates->setRating($rateLength);
+        } else {
+            $rates = new ArticleRating();
+            $rates->setArticle($article);
+            $rates->setRating($rateLength);
+            $rates->setAuthor($this->getCurrentUser());
+            $rates->setIpAddress("127.0.0.1");
+            $rates->setCreatedAt(new \DateTimeImmutable());
+            $this->entityManager->persist($rates);
+        }
+        $this->entityManager->flush();
+        return [
+            "articleId" => $article->getId(),
+            "rates" => $rateLength
         ];
     }
 

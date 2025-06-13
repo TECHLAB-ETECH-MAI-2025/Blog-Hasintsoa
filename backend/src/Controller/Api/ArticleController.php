@@ -6,6 +6,7 @@ use App\Dto\CommentArticleDto;
 use App\Dto\PaginationDto;
 use App\Dto\RequestArticleDto;
 use App\Dto\RequestCommentDto;
+use App\Dto\RequestRatingDto;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
 use App\Service\Article\ArticleServiceInterface;
@@ -107,6 +108,18 @@ final class ArticleController extends AbstractController
     ): JsonResponse {
         return $this->json(
             $this->articleService->commentArticleFromRequestCommentDto($article, $request)
+        );
+    }
+
+    #[Route('/{id}/rate', name: 'api_article_rate', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function rateArticle(
+        Article $article,
+        #[MapRequestPayload]
+        RequestRatingDto $request
+    ): JsonResponse {
+        return $this->json(
+            $this->articleService->rateArticle($article, $request)
         );
     }
 }
