@@ -20,9 +20,6 @@ function ChatBubble({
           <img src={"/assets/images/profile_image.jpg"} alt="Avatar" />
         </div>
       </div>
-      <div className="chat-header">
-        {sender === "person1" ? "Vous" : "Autre personne"}
-      </div>
       <div className={contentClass}>{message}</div>
     </div>
   );

@@ -28,7 +28,7 @@ function LinkList() {
       </li>
       {account && (
         <li>
-          <a>Chatting</a>
+          <Link to={"/chat"}>Chatting</Link>
         </li>
       )}
     </>

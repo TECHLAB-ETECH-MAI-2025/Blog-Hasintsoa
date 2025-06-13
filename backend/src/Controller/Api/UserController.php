@@ -13,13 +13,12 @@ use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted("ROLE_ADMIN")]
 final class UserController extends AbstractController
 {
     public function __construct(private readonly UserServiceInterface $userService) {}
 
     #[Route("/app/users/data-table", name: "app_users_data", methods: ['POST'])]
-
+    #[IsGranted("ROLE_ADMIN")]
     public function index(Request $request): JsonResponse
     {
         $paginationResult = $this->userService->paginateDataTable(

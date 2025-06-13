@@ -37,6 +37,14 @@ export interface Article {
   author: Author;
 }
 
+export interface Message {
+  id: number;
+  sender: Author;
+  receiver: Author;
+  content: string;
+  createdAt: string;
+}
+
 export interface Response<T> {
   success: boolean;
   status: number;

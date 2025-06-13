@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 class Message
@@ -12,20 +13,25 @@ class Message
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['message.chat'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'sendedMessages')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['message.chat'])]
     private ?User $sender = null;
 
     #[ORM\ManyToOne(inversedBy: 'receivedMessages')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['message.chat'])]
     private ?User $receiver = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['message.chat'])]
     private ?string $content = null;
 
     #[ORM\Column]
+    #[Groups(['message.chat'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
