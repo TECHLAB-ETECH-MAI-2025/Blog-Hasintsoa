@@ -3,3 +3,88 @@
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark;
 }
+
+/* Styles personnalisés pour le défilement et la hauteur */
+.chat-messages-container {
+  height: calc(100vh - 12rem);
+  /* Ajuste la hauteur pour laisser de la place au header et à l'input */
+  max-height: calc(100vh - 12rem);
+}
+
+/* Pour cacher la barre de défilement sur les navigateurs basés sur WebKit (Chrome, Safari) */
+.overflow-y-auto::-webkit-scrollbar {
+  display: none;
+}
+
+/* Pour IE, Edge et Firefox */
+.overflow-y-auto {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Styles pour gérer l'affichage sur mobile/desktop (sans JS, c'est juste un placeholder visuel) */
+/* Par défaut, la liste et le chat sont visibles sur desktop */
+.mobile-only-list {
+  display: none;
+}
+
+.desktop-only-chat {
+  display: flex;
+}
+
+/* Utilise flex pour le chat */
+
+/* Sur les écrans plus petits (typiquement mobiles), affichons uniquement la liste par défaut */
+@media (max-width: 767px) {
+
+  /* Breakpoint 'md' par défaut de Tailwind est 768px */
+  .main-layout {
+    flex-direction: column;
+  }
+
+  /* Les colonnes deviennent des lignes */
+  .user-list-section {
+    width: 100%;
+  }
+
+  /* La liste prend toute la largeur */
+  .chat-section {
+    width: 100%;
+  }
+
+  /* Le chat prend toute la largeur */
+
+  /* Pour masquer/afficher avec du JS, voici les classes */
+  /* En HTML pur, ces états sont fixes */
+  .user-list-wrapper {
+    /* Ici, la liste est toujours affichée sur mobile sans JS */
+    display: block;
+    /* Ou block si vous voulez la liste par défaut */
+  }
+
+  .chat-wrapper {
+    display: none;
+    /* Le chat est masqué par défaut sur mobile sans JS */
+  }
+
+  /* Si l'utilisateur clique sur un élément de la liste, du JS devrait ajouter une classe pour: */
+  /* .user-list-wrapper.active { display: none; } */
+  /* .chat-wrapper.active { display: block; } */
+
+  /* Placeholder visuel pour la gestion mobile/desktop: */
+  .mobile-only-list {
+    display: block;
+  }
+
+  .desktop-only-chat {
+    display: none;
+  }
+}
+
+/* Effet de survol sur la liste des utilisateurs */
+.user-list-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}

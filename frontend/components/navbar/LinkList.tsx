@@ -6,9 +6,11 @@ function LinkList() {
 
   return (
     <>
-      <li>
-        <a>Item 1</a>
-      </li>
+      {account && (
+        <li>
+          <a>Administration</a>
+        </li>
+      )}
       <li>
         <details>
           <summary>Blog</summary>
@@ -24,9 +26,11 @@ function LinkList() {
           </ul>
         </details>
       </li>
-      <li>
-        <a>Item 3</a>
-      </li>
+      {account && (
+        <li>
+          <a>Chatting</a>
+        </li>
+      )}
     </>
   );
 }

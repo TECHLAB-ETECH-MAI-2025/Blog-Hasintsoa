@@ -11,5 +11,6 @@ export default [
     route("articles/:id", "routes/article/show-article.tsx"),
     route("articles/new", "routes/article/new-article.tsx"),
     route("categories", "routes/category/list-category.tsx"),
+    route("chat", "routes/chat/chat-app.tsx"),
   ])
 ] satisfies RouteConfig;
