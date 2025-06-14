@@ -141,10 +141,10 @@ final class ChatController extends AbstractController
         $message->setSender($userAuth);
         $message->setReceiver($user);
         $message->setCreatedAt(new \DateTimeImmutable());
-        //$entityManager->persist($message);
-        //$entityManager->flush();
+        $entityManager->persist($message);
+        $entityManager->flush();
         try {
-            //$eventDispatcher->dispatch(new MessageNotificationEvent($message));
+            $eventDispatcher->dispatch(new MessageNotificationEvent($message));
             $topic = sprintf(
                 'https://127.0.0.1:8000/front/chat/messages/%d/%d',
                 min($message->getSender()->getId(), $user->getId()),
